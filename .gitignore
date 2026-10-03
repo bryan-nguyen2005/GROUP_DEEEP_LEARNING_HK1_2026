@@ -1,0 +1,28 @@
+# Moi truong ao
+.venv/
+venv/
+env/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+profile_default/
+ipynb_checkpoints/
+
+
+# He dieu hanh / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
