@@ -1,0 +1,221 @@
+{
+  "seed": 42,
+  "validation_size": 0.2,
+  "n_train": 1168,
+  "n_valid": 292,
+  "n_features_raw": 79,
+  "n_features_encoded": 285,
+  "feature_set": "original",
+  "preprocessing_module": "src/preprocessing.py",
+  "numeric_columns": [
+    "MSSubClass",
+    "LotFrontage",
+    "LotArea",
+    "OverallQual",
+    "OverallCond",
+    "YearBuilt",
+    "YearRemodAdd",
+    "MasVnrArea",
+    "BsmtFinSF1",
+    "BsmtFinSF2",
+    "BsmtUnfSF",
+    "TotalBsmtSF",
+    "1stFlrSF",
+    "2ndFlrSF",
+    "LowQualFinSF",
+    "GrLivArea",
+    "BsmtFullBath",
+    "BsmtHalfBath",
+    "FullBath",
+    "HalfBath",
+    "BedroomAbvGr",
+    "KitchenAbvGr",
+    "TotRmsAbvGrd",
+    "Fireplaces",
+    "GarageYrBlt",
+    "GarageCars",
+    "GarageArea",
+    "WoodDeckSF",
+    "OpenPorchSF",
+    "EnclosedPorch",
+    "3SsnPorch",
+    "ScreenPorch",
+    "PoolArea",
+    "MiscVal",
+    "MoSold",
+    "YrSold"
+  ],
+  "categorical_columns": [
+    "MSZoning",
+    "Street",
+    "Alley",
+    "LotShape",
+    "LandContour",
+    "Utilities",
+    "LotConfig",
+    "LandSlope",
+    "Neighborhood",
+    "Condition1",
+    "Condition2",
+    "BldgType",
+    "HouseStyle",
+    "RoofStyle",
+    "RoofMatl",
+    "Exterior1st",
+    "Exterior2nd",
+    "MasVnrType",
+    "ExterQual",
+    "ExterCond",
+    "Foundation",
+    "BsmtQual",
+    "BsmtCond",
+    "BsmtExposure",
+    "BsmtFinType1",
+    "BsmtFinType2",
+    "Heating",
+    "HeatingQC",
+    "CentralAir",
+    "Electrical",
+    "KitchenQual",
+    "Functional",
+    "FireplaceQu",
+    "GarageType",
+    "GarageFinish",
+    "GarageQual",
+    "GarageCond",
+    "PavedDrive",
+    "PoolQC",
+    "Fence",
+    "MiscFeature",
+    "SaleType",
+    "SaleCondition"
+  ],
+  "scale_numeric": true,
+  "sparse_threshold": 0,
+  "device": "cpu",
+  "threads": 2,
+  "max_epochs": 400,
+  "early_stopping_patience": 40,
+  "dummy_val_rmse": 0.43324391618066094,
+  "best_model": "MLP_2_lr_3e-4",
+  "best_validation_rmse": 0.12939907549697288,
+  "best_epoch": 22,
+  "versions": {
+    "torch": "2.14.1+cpu",
+    "numpy": "2.3.3",
+    "pandas": "3.0.6",
+    "scipy": "1.18.1",
+    "scikit-learn": "1.9.1",
+    "matplotlib": "3.11.2",
+    "joblib": "1.6.0"
+  },
+  "evaluation": "Single holdout split; validation reused to select configurations.",
+  "kaggle_score": null,
+  "submission_training": "full_training_data",
+  "configurations": [
+    {
+      "name": "MLP_1_baseline",
+      "hidden_dims": [
+        128,
+        64
+      ],
+      "dropout": 0.0,
+      "batch_norm": false,
+      "learning_rate": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 64
+    },
+    {
+      "name": "MLP_2_deeper",
+      "hidden_dims": [
+        256,
+        128,
+        64
+      ],
+      "dropout": 0.2,
+      "batch_norm": false,
+      "learning_rate": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 64
+    },
+    {
+      "name": "MLP_3_batchnorm",
+      "hidden_dims": [
+        512,
+        256,
+        128,
+        64
+      ],
+      "dropout": 0.2,
+      "batch_norm": true,
+      "learning_rate": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 64
+    },
+    {
+      "name": "MLP_2_lr_1e-2",
+      "hidden_dims": [
+        256,
+        128,
+        64
+      ],
+      "dropout": 0.2,
+      "batch_norm": false,
+      "learning_rate": 0.01,
+      "weight_decay": 0.0001,
+      "batch_size": 64
+    },
+    {
+      "name": "MLP_2_lr_3e-4",
+      "hidden_dims": [
+        256,
+        128,
+        64
+      ],
+      "dropout": 0.2,
+      "batch_norm": false,
+      "learning_rate": 0.0003,
+      "weight_decay": 0.0001,
+      "batch_size": 64
+    },
+    {
+      "name": "MLP_2_dropout_0",
+      "hidden_dims": [
+        256,
+        128,
+        64
+      ],
+      "dropout": 0.0,
+      "batch_norm": false,
+      "learning_rate": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 64
+    },
+    {
+      "name": "MLP_2_dropout_01",
+      "hidden_dims": [
+        256,
+        128,
+        64
+      ],
+      "dropout": 0.1,
+      "batch_norm": false,
+      "learning_rate": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 64
+    },
+    {
+      "name": "MLP_2_dropout_03",
+      "hidden_dims": [
+        256,
+        128,
+        64
+      ],
+      "dropout": 0.3,
+      "batch_norm": false,
+      "learning_rate": 0.001,
+      "weight_decay": 0.0001,
+      "batch_size": 64
+    }
+  ]
+}
