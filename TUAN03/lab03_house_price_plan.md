@@ -59,27 +59,27 @@ RMSE trên log(SalePrice)
 
 # 3. Phân công nhóm 4 người
 
-## Thành viên 1 - Data + EDA + Preprocessing
+## VÕ HUỲNH MINH SANG - Data + EDA + Preprocessing
 
 ### Nhiệm vụ
 
-- [ ] Đọc paper Ames Housing.
-- [ ] Xác định bài toán.
-- [ ] Load `train.csv`, `test.csv`.
-- [ ] Kiểm tra shape.
-- [ ] Kiểm tra kiểu dữ liệu.
-- [ ] Kiểm tra missing values.
-- [ ] Phân tích target `SalePrice`.
-- [ ] Phân tích numerical features.
-- [ ] Phân tích categorical features.
-- [ ] Phân tích correlation.
-- [ ] Kiểm tra outlier.
-- [ ] Xây dựng preprocessing pipeline dùng sklearn.
+- [x] Đọc paper Ames Housing.
+- [x] Xác định bài toán.
+- [x] Load `train.csv`, `test.csv`.
+- [x] Kiểm tra shape.
+- [x] Kiểm tra kiểu dữ liệu.
+- [x] Kiểm tra missing values.
+- [x] Phân tích target `SalePrice`.
+- [x] Phân tích numerical features.
+- [x] Phân tích categorical features.
+- [x] Phân tích correlation.
+- [x] Kiểm tra outlier.
+- [x] Xây dựng preprocessing pipeline dùng sklearn.
 
 ### File phụ trách
 
 ```text
-notebooks/01_eda.ipynb
+notebooks/01_eda_preprocessing.ipynb
 src/preprocessing.py
 ```
 
@@ -109,14 +109,14 @@ print(missing)
 
 ### Các biểu đồ nên có
 
-- [ ] Distribution của `SalePrice`.
-- [ ] Distribution của `log1p(SalePrice)`.
-- [ ] `OverallQual` vs `SalePrice`.
-- [ ] `GrLivArea` vs `SalePrice`.
-- [ ] `YearBuilt` vs `SalePrice`.
-- [ ] `GarageCars` vs `SalePrice`.
-- [ ] `TotalBsmtSF` vs `SalePrice`.
-- [ ] Correlation heatmap cho numerical features.
+- [x] Distribution của `SalePrice`.
+- [x] Distribution của `log1p(SalePrice)`.
+- [x] `OverallQual` vs `SalePrice`.
+- [x] `GrLivArea` vs `SalePrice`.
+- [x] `YearBuilt` vs `SalePrice`.
+- [x] `GarageCars` vs `SalePrice`.
+- [x] `TotalBsmtSF` vs `SalePrice`.
+- [x] Correlation heatmap cho numerical features.
 
 ### Preprocessing đề xuất
 
@@ -144,14 +144,14 @@ preprocessor = ColumnTransformer([
 
 ### Kết quả phải bàn giao cho nhóm
 
-- [ ] Danh sách numerical columns.
-- [ ] Danh sách categorical columns.
-- [ ] Preprocessing pipeline.
-- [ ] Notebook EDA chạy được từ đầu tới cuối.
+- [x] Danh sách numerical columns.
+- [x] Danh sách categorical columns.
+- [x] Preprocessing pipeline.
+- [x] Notebook EDA chạy được từ đầu tới cuối.
 
 ---
 
-# 4. Thành viên 2 - Machine Learning bằng scikit-learn
+# 4. NGUYỄN ĐÌNH CƯỜNG - Machine Learning bằng scikit-learn
 
 ## Nhiệm vụ
 
@@ -159,19 +159,19 @@ Dùng preprocessing của thành viên 1.
 
 ### Baseline models
 
-- [ ] `DummyRegressor`
-- [ ] `LinearRegression`
-- [ ] `Ridge`
-- [ ] `Lasso`
-- [ ] `ElasticNet`
+- [x] `DummyRegressor`
+- [x] `LinearRegression`
+- [x] `Ridge`
+- [x] `Lasso`
+- [x] `ElasticNet`
 
 ### Tree / Ensemble models
 
-- [ ] `DecisionTreeRegressor`
-- [ ] `RandomForestRegressor`
-- [ ] `ExtraTreesRegressor`
-- [ ] `GradientBoostingRegressor`
-- [ ] `HistGradientBoostingRegressor` nếu phù hợp pipeline.
+- [x] `DecisionTreeRegressor`
+- [x] `RandomForestRegressor`
+- [x] `ExtraTreesRegressor`
+- [x] `GradientBoostingRegressor`
+- [x] `HistGradientBoostingRegressor` nếu phù hợp pipeline.
 
 > Lưu ý: đây là bài toán Regression, không dùng `DecisionTreeClassifier`.
 
@@ -248,27 +248,34 @@ params = {
 }
 ```
 
-### Bảng kết quả cần tạo
+### Bảng kết quả thực nghiệm đạt được (5-Fold CV)
 
-| Model | CV RMSE | Best Params |
-|---|---:|---|
-| DummyRegressor | ... | ... |
-| LinearRegression | ... | ... |
-| Ridge | ... | ... |
-| Lasso | ... | ... |
-| RandomForest | ... | ... |
-| GradientBoosting | ... | ... |
+| Model                    |     CV RMSE |     Std | Status   | Best Params                                                      |
+| ------------------------ | ----------: | ------: | -------- | ---------------------------------------------------------------- |
+| GradientBoosting (Tuned) | **0.12915** | 0.02309 | Tuned    | learning_rate=0.05, max_depth=3, n_estimators=300, subsample=0.8 |
+| GradientBoosting         |     0.13361 | 0.01960 | Baseline | default (n_estimators=100)                                       |
+| HistGradientBoosting     |     0.13530 | 0.01828 | Baseline | default                                                          |
+| RandomForest (Tuned)     |     0.13977 | 0.01725 | Tuned    | max_depth=None, max_features=0.5, n_estimators=300               |
+| ElasticNet               |     0.14285 | 0.04202 | Baseline | alpha=0.001, l1_ratio=0.5                                        |
+| ExtraTrees               |     0.14388 | 0.01170 | Baseline | default (n_estimators=100)                                       |
+| Lasso                    |     0.14428 | 0.04247 | Baseline | alpha=0.001                                                      |
+| RandomForest             |     0.14523 | 0.01921 | Baseline | default (n_estimators=100)                                       |
+| Ridge (Tuned)            |     0.14655 | 0.03997 | Tuned    | alpha=30.0                                                       |
+| Ridge                    |     0.14678 | 0.03933 | Baseline | alpha=10.0                                                       |
+| LinearRegression         |     0.15274 | 0.04702 | Baseline | default                                                          |
+| DecisionTree             |     0.20913 | 0.01846 | Baseline | default                                                          |
+| DummyRegressor           |     0.39878 | 0.02513 | Baseline | strategy="mean"                                                  |
 
 ### Kết quả phải bàn giao
 
-- [ ] File kết quả CV.
-- [ ] Best hyperparameters.
-- [ ] Best sklearn model.
-- [ ] Bảng so sánh model.
+- [x] File kết quả CV (`outputs/results/sklearn_results.csv`).
+- [x] Best hyperparameters (`outputs/results/sklearn_best_summary.json`).
+- [x] Best sklearn model (`models/best_sklearn_model.joblib`).
+- [x] Bảng so sánh model và biểu đồ so sánh (`outputs/figures/sklearn_models_comparison.png`).
 
 ---
 
-# 5. Thành viên 3 - MLP bằng PyTorch
+# 5. CHÂU QUỐC BẢO - MLP bằng PyTorch
 
 ## Nhiệm vụ
 
@@ -380,11 +387,11 @@ Dropout = 0.2
 
 ### Bảng kết quả
 
-| Model | Hidden Layers | LR | Dropout | Val RMSE |
-|---|---|---:|---:|---:|
-| MLP 1 | 128-64 | 0.001 | 0.0 | ... |
-| MLP 2 | 256-128-64 | 0.001 | 0.2 | ... |
-| MLP 3 | 512-256-128-64 | 0.0003 | 0.2 | ... |
+| Model | Hidden Layers  |     LR | Dropout | Val RMSE |
+| ----- | -------------- | -----: | ------: | -------: |
+| MLP 1 | 128-64         |  0.001 |     0.0 |      ... |
+| MLP 2 | 256-128-64     |  0.001 |     0.2 |      ... |
+| MLP 3 | 512-256-128-64 | 0.0003 |     0.2 |      ... |
 
 ### Kết quả phải bàn giao
 
@@ -396,7 +403,7 @@ Dropout = 0.2
 
 ---
 
-# 6. Thành viên 4 - Feature Engineering + Experiments + Kaggle
+# 6. NGUYỄN HOÀNG LONG - Feature Engineering + Experiments + Kaggle
 
 ## Nhiệm vụ
 
@@ -526,14 +533,14 @@ All Engineered Features
 
 ### Bảng kết quả
 
-| Experiment | Features | Ridge RMSE | Gradient Boosting RMSE | MLP RMSE |
-|---|---|---:|---:|---:|
-| E0 | Original | ... | ... | ... |
-| E1 | + TotalSF | ... | ... | ... |
-| E2 | + TotalBathrooms | ... | ... | ... |
-| E3 | + Age features | ... | ... | ... |
-| E4 | + Binary features | ... | ... | ... |
-| E5 | All engineered | ... | ... | ... |
+| Experiment | Features          | Ridge RMSE | Gradient Boosting RMSE | MLP RMSE |
+| ---------- | ----------------- | ---------: | ---------------------: | -------: |
+| E0         | Original          |        ... |                    ... |      ... |
+| E1         | + TotalSF         |        ... |                    ... |      ... |
+| E2         | + TotalBathrooms  |        ... |                    ... |      ... |
+| E3         | + Age features    |        ... |                    ... |      ... |
+| E4         | + Binary features |        ... |                    ... |      ... |
+| E5         | All engineered    |        ... |                    ... |      ... |
 
 ### Cách nhận xét
 
@@ -752,14 +759,14 @@ THÀNH VIÊN
 
 # 14. Bảng phân công đưa vào báo cáo
 
-| STT | Thành viên | Công việc |
-|---|---|---|
-| 1 | Họ tên 1 | Nghiên cứu paper, phân tích dữ liệu, EDA, xử lý missing data, xây dựng preprocessing pipeline |
-| 2 | Họ tên 2 | Xây dựng các mô hình Machine Learning bằng scikit-learn, cross-validation, hyperparameter tuning |
-| 3 | Họ tên 3 | Xây dựng MLP bằng PyTorch, DataLoader, training loop, validation, early stopping |
-| 4 | Họ tên 4 | Feature Engineering, ablation experiments, Kaggle submission, tổng hợp kết quả |
-| Cả nhóm | | Kiểm tra kết quả, viết và rà soát báo cáo |
-| Nhóm trưởng | | Tích hợp source code, chuẩn hóa báo cáo, đóng gói file nộp |
+| STT         | Thành viên | Công việc                                                                                        |
+| ----------- | ---------- | ------------------------------------------------------------------------------------------------ |
+| 1           | Họ tên 1   | Nghiên cứu paper, phân tích dữ liệu, EDA, xử lý missing data, xây dựng preprocessing pipeline    |
+| 2           | Họ tên 2   | Xây dựng các mô hình Machine Learning bằng scikit-learn, cross-validation, hyperparameter tuning |
+| 3           | Họ tên 3   | Xây dựng MLP bằng PyTorch, DataLoader, training loop, validation, early stopping                 |
+| 4           | Họ tên 4   | Feature Engineering, ablation experiments, Kaggle submission, tổng hợp kết quả                   |
+| Cả nhóm     |            | Kiểm tra kết quả, viết và rà soát báo cáo                                                        |
+| Nhóm trưởng |            | Tích hợp source code, chuẩn hóa báo cáo, đóng gói file nộp                                       |
 
 ---
 
@@ -769,17 +776,17 @@ THÀNH VIÊN
 
 ### Thành viên 1
 
-- [ ] Đọc paper.
-- [ ] EDA.
-- [ ] Missing values.
-- [ ] Preprocessing.
-- [ ] Hoàn thành `01_eda.ipynb`.
+- [x] Đọc paper.
+- [x] EDA.
+- [x] Missing values.
+- [x] Preprocessing.
+- [x] Hoàn thành `01_eda_preprocessing.ipynb`.
 
 ### Cả nhóm
 
-- [ ] Chốt preprocessing chung.
-- [ ] Chốt metric chung.
-- [ ] Chốt random seed = 42.
+- [x] Chốt preprocessing chung.
+- [x] Chốt metric chung.
+- [x] Chốt random seed = 42.
 
 ---
 
@@ -787,10 +794,10 @@ THÀNH VIÊN
 
 ### Thành viên 2
 
-- [ ] Baseline sklearn.
-- [ ] Ridge/Lasso.
-- [ ] Random Forest.
-- [ ] Gradient Boosting.
+- [x] Baseline sklearn.
+- [x] Ridge/Lasso.
+- [x] Random Forest.
+- [x] Gradient Boosting.
 
 ### Thành viên 3
 
@@ -810,8 +817,8 @@ THÀNH VIÊN
 
 ### Thành viên 2
 
-- [ ] Hyperparameter tuning.
-- [ ] Chốt best sklearn model.
+- [x] Hyperparameter tuning.
+- [x] Chốt best sklearn model.
 
 ### Thành viên 3
 
@@ -908,14 +915,14 @@ Nên đặt preprocessing trong sklearn `Pipeline`.
 
 # 17. Bảng kết quả cuối cùng cần có
 
-| Model | Feature Set | CV / Val RMSE | Kaggle Score |
-|---|---|---:|---:|
-| Ridge | Original | ... | ... |
-| Ridge | Engineered | ... | ... |
-| Random Forest | Original | ... | ... |
-| Gradient Boosting | Engineered | ... | ... |
-| MLP | Original | ... | ... |
-| MLP | Engineered | ... | ... |
+| Model             | Feature Set | CV / Val RMSE | Kaggle Score |
+| ----------------- | ----------- | ------------: | -----------: |
+| Ridge             | Original    |           ... |          ... |
+| Ridge             | Engineered  |           ... |          ... |
+| Random Forest     | Original    |           ... |          ... |
+| Gradient Boosting | Engineered  |           ... |          ... |
+| MLP               | Original    |           ... |          ... |
+| MLP               | Engineered  |           ... |          ... |
 
 Sau đó kết luận dựa trên kết quả thực nghiệm.
 
@@ -925,22 +932,22 @@ Sau đó kết luận dựa trên kết quả thực nghiệm.
 
 ## Source code
 
-- [ ] `01_eda.ipynb` chạy được.
-- [ ] `02_sklearn_models.ipynb` chạy được.
+- [x] `01_eda_preprocessing.ipynb` chạy được.
+- [x] `02_sklearn_models.ipynb` chạy được.
 - [ ] `03_pytorch_mlp.ipynb` chạy được.
 - [ ] `04_feature_engineering.ipynb` chạy được.
-- [ ] Source trong `src/` không lỗi import.
-- [ ] `requirements.txt` đầy đủ.
+- [x] Source trong `src/` không lỗi import.
+- [x] `requirements.txt` đầy đủ.
 
 ## Experiments
 
-- [ ] Có baseline.
-- [ ] Có sklearn model.
+- [x] Có baseline.
+- [x] Có sklearn model.
 - [ ] Có PyTorch MLP.
 - [ ] Có feature engineering.
 - [ ] Có ablation study.
-- [ ] Có RMSE.
-- [ ] Có bảng so sánh.
+- [x] Có RMSE.
+- [x] Có bảng so sánh.
 
 ## Kaggle
 
@@ -980,9 +987,9 @@ lab03_house_price_hoten_masv.zip
 
 Nếu gần deadline, làm theo thứ tự:
 
-1. [ ] Preprocessing chạy đúng.
-2. [ ] Ridge baseline.
-3. [ ] GradientBoosting/RandomForest.
+1. [x] Preprocessing chạy đúng.
+2. [x] Ridge baseline.
+3. [x] GradientBoosting/RandomForest.
 4. [ ] MLP PyTorch baseline.
 5. [ ] `TotalSF`, `TotalBathrooms`, `HouseAge`.
 6. [ ] Ablation experiment.
@@ -1008,18 +1015,18 @@ Nếu gần deadline, làm theo thứ tự:
 
 ## Người 1 hoàn thành khi
 
-- [ ] Notebook EDA chạy toàn bộ không lỗi.
-- [ ] Có preprocessing pipeline dùng chung.
-- [ ] Có ít nhất 5 biểu đồ EDA.
+- [x] Notebook EDA chạy toàn bộ không lỗi.
+- [x] Có preprocessing pipeline dùng chung.
+- [x] Có ít nhất 5 biểu đồ EDA.
 - [ ] Có phần viết báo cáo Data + EDA + Preprocessing.
 
 ## Người 2 hoàn thành khi
 
-- [ ] Có ít nhất 4 sklearn regression models.
-- [ ] Có 5-fold CV.
-- [ ] Có tuning ít nhất 1 model.
-- [ ] Có bảng RMSE.
-- [ ] Có best sklearn model.
+- [x] Có ít nhất 4 sklearn regression models.
+- [x] Có 5-fold CV.
+- [x] Có tuning ít nhất 1 model.
+- [x] Có bảng RMSE.
+- [x] Có best sklearn model.
 
 ## Người 3 hoàn thành khi
 

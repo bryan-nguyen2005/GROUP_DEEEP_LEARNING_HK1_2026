@@ -1,0 +1,13 @@
+{
+  "best_model_name": "GradientBoosting (Tuned)",
+  "best_cv_rmse": 0.12915,
+  "best_cv_rmse_std": 0.02309,
+  "best_params": {
+    "regressor__learning_rate": 0.05,
+    "regressor__max_depth": 3,
+    "regressor__n_estimators": 300,
+    "regressor__subsample": 0.8
+  },
+  "metric": "RMSE on log1p(SalePrice)",
+  "cv": "5-Fold KFold(shuffle=True, random_state=42)"
+}
