@@ -1,0 +1,7 @@
+experiment,feature_set,features,n_raw_features,ridge_cv_rmse,ridge_cv_std,gb_cv_rmse,gb_cv_std,mlp_val_rmse,mlp_best_epoch,seconds,ridge_delta_vs_e0,gb_delta_vs_e0,mlp_delta_vs_e0
+E0,Original,Original,79,0.14655,0.03997,0.12915,0.02309,0.1294,22,16.2,0.0,0.0,0.0
+E1,+ TotalSF,TotalSF,80,0.1467,0.04046,0.12792,0.0208,0.12971,20,11.7,0.00015,-0.00123,0.00031
+E2,+ TotalSF + TotalBathrooms,TotalSF+TotalBathrooms,81,0.1467,0.04036,0.12822,0.01743,0.12957,20,10.3,0.00015,-0.00093,0.00017
+E3,+ HouseAge + RemodAge,HouseAge+RemodAge,81,0.14662,0.04012,0.12939,0.0236,0.1317,20,9.8,7e-05,0.00024,0.0023
+E4,+ Binary features,HasGarage+HasBsmt+HasFireplace+HasPool+Has2ndFloor,84,0.14528,0.04022,0.12964,0.02312,0.13105,19,10.5,-0.00127,0.00049,0.00165
+E5,All engineered features,TotalSF+TotalBathrooms+TotalPorchSF+HouseAge+RemodAge+GarageAge+HasGarage+HasBsmt+HasFireplace+HasPool+Has2ndFloor,90,0.14549,0.04078,0.12645,0.01814,0.13189,19,11.2,-0.00106,-0.0027,0.00249

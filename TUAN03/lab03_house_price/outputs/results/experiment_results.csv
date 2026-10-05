@@ -1,0 +1,8 @@
+Model,Feature Set,CV/Val RMSE,Std,Evaluation,Source,Kaggle Score
+GradientBoosting (Tuned),Original,0.12915,0.02309,5-Fold CV,outputs/results/sklearn_results.csv,
+RandomForest,Original,0.14523,0.01921,5-Fold CV,outputs/results/sklearn_results.csv,
+Ridge,Original,0.14678,0.03933,5-Fold CV,outputs/results/sklearn_results.csv,
+MLP (MLP_2_lr_3e-4),Original,0.1294,,Holdout validation 80/20,outputs/results/mlp_results.csv,
+Ridge,Engineered (E5),0.14549,0.04078,5-Fold CV,outputs/results/ablation_results.csv,
+GradientBoosting (Tuned),Engineered (E5),0.12645,0.01814,5-Fold CV,outputs/results/ablation_results.csv,
+MLP (best config),Engineered (E5),0.13189,,Holdout validation 80/20,outputs/results/ablation_results.csv,

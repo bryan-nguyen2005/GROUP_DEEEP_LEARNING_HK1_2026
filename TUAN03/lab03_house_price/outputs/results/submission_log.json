@@ -1,0 +1,11 @@
+{
+  "submission_best.csv": {
+    "model": "GradientBoosting",
+    "experiment": "E5",
+    "feature_set": "E5",
+    "cv_rmse": 0.12645,
+    "trained_on": "full train.csv (1460 rows)",
+    "created_by": "src/predict.py::create_submission_best",
+    "kaggle_score": null
+  }
+}

@@ -407,12 +407,12 @@ Dropout = 0.2
 
 ## Nhiệm vụ
 
-- [ ] Tạo feature mới.
-- [ ] Đánh giá từng feature.
-- [ ] Chạy ablation experiments.
-- [ ] So sánh trước/sau feature engineering.
-- [ ] Tạo submission Kaggle.
-- [ ] Tổng hợp bảng kết quả cuối.
+- [x] Tạo feature mới.
+- [x] Đánh giá từng feature.
+- [x] Chạy ablation experiments.
+- [x] So sánh trước/sau feature engineering.
+- [x] Tạo submission Kaggle.
+- [x] Tổng hợp bảng kết quả cuối.
 
 ### File phụ trách
 
@@ -807,9 +807,9 @@ THÀNH VIÊN
 
 ### Thành viên 4
 
-- [ ] Viết `features.py`.
-- [ ] Tạo feature engineering.
-- [ ] Chuẩn bị ablation experiments.
+- [x] Viết `features.py`.
+- [x] Tạo feature engineering.
+- [x] Chuẩn bị ablation experiments.
 
 ---
 
@@ -827,8 +827,8 @@ THÀNH VIÊN
 
 ### Thành viên 4
 
-- [ ] Chạy E0-E5.
-- [ ] Tổng hợp experiment results.
+- [x] Chạy E0-E5.
+- [x] Tổng hợp experiment results.
 
 ---
 
@@ -935,7 +935,7 @@ Sau đó kết luận dựa trên kết quả thực nghiệm.
 - [x] `01_eda_preprocessing.ipynb` chạy được.
 - [x] `02_sklearn_models.ipynb` chạy được.
 - [ ] `03_pytorch_mlp.ipynb` chạy được.
-- [ ] `04_feature_engineering.ipynb` chạy được.
+- [x] `04_feature_engineering.ipynb` chạy được.
 - [x] Source trong `src/` không lỗi import.
 - [x] `requirements.txt` đầy đủ.
 
@@ -944,14 +944,14 @@ Sau đó kết luận dựa trên kết quả thực nghiệm.
 - [x] Có baseline.
 - [x] Có sklearn model.
 - [ ] Có PyTorch MLP.
-- [ ] Có feature engineering.
-- [ ] Có ablation study.
+- [x] Có feature engineering.
+- [x] Có ablation study.
 - [x] Có RMSE.
 - [x] Có bảng so sánh.
 
 ## Kaggle
 
-- [ ] Có file submission đúng format.
+- [x] Có file submission đúng format.
 - [ ] Có Kaggle score.
 - [ ] Ghi rõ model nào được dùng để submit.
 
@@ -1039,11 +1039,11 @@ Nếu gần deadline, làm theo thứ tự:
 
 ## Người 4 hoàn thành khi
 
-- [ ] Có `features.py`.
-- [ ] Có ít nhất 5 engineered features.
-- [ ] Có ablation study.
-- [ ] Có bảng trước/sau feature engineering.
-- [ ] Có ít nhất 1 submission Kaggle hợp lệ.
+- [x] Có `features.py`.
+- [x] Có ít nhất 5 engineered features.
+- [x] Có ablation study.
+- [x] Có bảng trước/sau feature engineering.
+- [x] Có ít nhất 1 submission Kaggle hợp lệ.
 
 ## Cả nhóm hoàn thành khi
 

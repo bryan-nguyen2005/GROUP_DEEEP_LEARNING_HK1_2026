@@ -1,0 +1,79 @@
+{
+  "owner": "Thanh vien 4 — Feature Engineering",
+  "metric": "RMSE on log1p(SalePrice)",
+  "sklearn_evaluation": "5-Fold KFold(shuffle=True, random_state=42)",
+  "mlp_evaluation": "holdout 80/20, random_state=42 (giong thanh vien 3)",
+  "ridge_params": {
+    "alpha": 30.0
+  },
+  "gradient_boosting_params": {
+    "n_estimators": 300,
+    "learning_rate": 0.05,
+    "max_depth": 3,
+    "subsample": 0.8
+  },
+  "mlp_config": {
+    "hidden_dims": [
+      256,
+      128,
+      64
+    ],
+    "dropout": 0.2,
+    "learning_rate": 0.0003,
+    "batch_size": 64
+  },
+  "seed": 42,
+  "experiments": {
+    "E0": {
+      "label": "Original",
+      "features": []
+    },
+    "E1": {
+      "label": "+ TotalSF",
+      "features": [
+        "TotalSF"
+      ]
+    },
+    "E2": {
+      "label": "+ TotalSF + TotalBathrooms",
+      "features": [
+        "TotalSF",
+        "TotalBathrooms"
+      ]
+    },
+    "E3": {
+      "label": "+ HouseAge + RemodAge",
+      "features": [
+        "HouseAge",
+        "RemodAge"
+      ]
+    },
+    "E4": {
+      "label": "+ Binary features",
+      "features": [
+        "HasGarage",
+        "HasBsmt",
+        "HasFireplace",
+        "HasPool",
+        "Has2ndFloor"
+      ]
+    },
+    "E5": {
+      "label": "All engineered features",
+      "features": [
+        "TotalSF",
+        "TotalBathrooms",
+        "TotalPorchSF",
+        "HouseAge",
+        "RemodAge",
+        "GarageAge",
+        "HasGarage",
+        "HasBsmt",
+        "HasFireplace",
+        "HasPool",
+        "Has2ndFloor"
+      ]
+    }
+  },
+  "kaggle_score": null
+}

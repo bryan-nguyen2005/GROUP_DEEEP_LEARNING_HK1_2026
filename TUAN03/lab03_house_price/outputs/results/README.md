@@ -8,15 +8,16 @@ Theo [plan Lab03](../../../lab03_house_price_plan.md), mục 4–8 và 17. Lưu 
 | `mlp_results.csv` | Thành viên 3 | Model, hidden layers, learning rate, dropout, validation RMSE, best epoch |
 | `mlp_training_history.csv` | Thành viên 3 | Cấu hình/run, epoch, train loss, validation loss để vẽ loss curve |
 | `ablation_results.csv` | Thành viên 4 | Experiment E0–E5, feature set, RMSE của Ridge, Gradient Boosting và MLP |
+| `experiment_report.md` | Thành viên 4 | Bảng và nhận xét trực quan, có thể dùng trực tiếp khi viết báo cáo |
 | `experiment_results.csv` | Thành viên 4 tổng hợp | Model, feature set, CV/validation RMSE, Kaggle score nếu đã nộp |
 
 ## Checklist theo plan
 
 - [ ] Thành viên 2: ít nhất 4 sklearn regression models, 5-fold CV với seed `42`, tuning ít nhất 1 model, bảng RMSE và cấu hình tốt nhất.
 - [ ] Thành viên 3: so sánh ít nhất 3 cấu hình MLP, ghi validation RMSE và best checkpoint tương ứng trong `../../models/`.
-- [ ] Thành viên 4: so sánh E0 (original), E1 (+ TotalSF), E2 (+ TotalSF + TotalBathrooms), E3 (+ HouseAge + RemodAge), E4 (+ binary features), E5 (all engineered features).
-- [ ] Nhận xét bằng số liệu trước/sau và mức cải thiện; giữ cùng cách chia dữ liệu khi so sánh feature set.
-- [ ] Bảng cuối ghi rõ CV hay validation, model dùng để submit và tên file trong `../submissions/`.
+- [x] Thành viên 4: so sánh E0 (original), E1 (+ TotalSF), E2 (+ TotalSF + TotalBathrooms), E3 (+ HouseAge + RemodAge), E4 (+ binary features), E5 (all engineered features).
+- [x] Nhận xét bằng số liệu trước/sau và mức cải thiện; giữ cùng cách chia dữ liệu khi so sánh feature set.
+- [x] Bảng cuối ghi rõ CV hay validation, model dùng để submit và tên file trong `../submissions/`.
 
 ## Quy tắc ghi kết quả
 
