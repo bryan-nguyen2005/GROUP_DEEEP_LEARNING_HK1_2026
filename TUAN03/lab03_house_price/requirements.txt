@@ -1,9 +1,0 @@
-pandas>=3.0,<4
-numpy
-matplotlib
-seaborn
-scikit-learn
-torch
-jupyter
-joblib
-xgboost
