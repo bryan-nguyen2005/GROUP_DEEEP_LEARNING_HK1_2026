@@ -1,0 +1,3 @@
+# Thư mục chứa dữ liệu CSV (data/.gitkeep)
+# - data/test_dataset_100.csv (Tập test độc lập cố định 100 mẫu)
+# - data/train_val_pool.csv (Pool 5000 mẫu phục vụ train và val)

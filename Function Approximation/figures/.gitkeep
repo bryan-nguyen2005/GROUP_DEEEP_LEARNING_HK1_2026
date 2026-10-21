@@ -1,0 +1,9 @@
+# Thư mục lưu biểu đồ xuất ra chất lượng cao 300 DPI (figures/.gitkeep)
+# - figures/ground_truth_surface.png
+# - figures/test_3d_scatter.png
+# - figures/exp_A_samples_vs_error.png
+# - figures/exp_B_width_vs_error.png
+# - figures/exp_C_depth_vs_error.png
+# - figures/exp_C_depth_vs_time.png
+# - figures/best_model_parity_and_residuals.png
+# - figures/best_model_3d_comparison.png

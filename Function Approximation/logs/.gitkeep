@@ -1,0 +1,5 @@
+# Thư mục logs kết quả thực nghiệm (logs/.gitkeep)
+# - logs/exp_A_results.csv
+# - logs/exp_B_results.csv
+# - logs/exp_C_results.csv
+# - logs/best_model_test_metrics.csv
