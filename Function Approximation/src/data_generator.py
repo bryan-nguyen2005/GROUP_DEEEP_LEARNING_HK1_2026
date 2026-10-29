@@ -52,13 +52,24 @@ def gaussian_2d_pdf(
     if cov is None:
         cov = np.array([[0.3, -0.5], [-0.5, 2.0]], dtype=np.float64)
 
-    # TODO (Thành viên 1):
-    # Bước 1: Kiểm tra chiều của x (phải là N x 2).
-    # Bước 2: Tính định thức det(C) và ma trận nghịch đảo C^-1 bằng np.linalg.det và np.linalg.inv.
-    # Bước 3: Tính hệ số chuẩn hóa 1 / (2 * pi * sqrt(det(C))).
-    # Bước 4: Tính khoảng cách Mahalanobis (x - mu)^T * C^-1 * (x - mu) cho từng mẫu.
-    # Bước 5: Nhân với exp(-0.5 * khoảng cách) và trả về mảng shape (N, 1).
-    raise NotImplementedError("TODO (Thành viên 1): Hãy triển khai hàm gaussian_2d_pdf theo công thức.")
+    x = np.asarray(x, dtype=np.float64)
+    mu = np.asarray(mu, dtype=np.float64)
+    cov = np.asarray(cov, dtype=np.float64)
+    if x.ndim != 2 or x.shape[1] != 2 or not np.isfinite(x).all():
+        raise ValueError("x phải có kích thước (N, 2) và chứa các số hữu hạn.")
+    if mu.shape != (2,) or not np.isfinite(mu).all():
+        raise ValueError("mu phải có kích thước (2,) và chứa các số hữu hạn.")
+    if cov.shape != (2, 2) or not np.isfinite(cov).all() or not np.allclose(cov, cov.T):
+        raise ValueError("cov phải là ma trận đối xứng (2, 2) chứa các số hữu hạn.")
+    try:
+        chol = np.linalg.cholesky(cov)
+    except np.linalg.LinAlgError as exc:
+        raise ValueError("cov phải là ma trận xác định dương.") from exc
+    delta = x - mu
+    normalized = np.linalg.solve(chol, delta.T)
+    squared_distance = np.sum(normalized ** 2, axis=0)
+    coefficient = 1.0 / (2.0 * np.pi * np.prod(np.diag(chol)))
+    return (coefficient * np.exp(-0.5 * squared_distance)).reshape(-1, 1)
 
 
 def generate_samples(
@@ -73,31 +84,43 @@ def generate_samples(
     Sinh ngẫu nhiên n_samples điểm phân bố đều trong miền [x1_range] x [x2_range]
     và tính nhãn mục tiêu y = gaussian_2d_pdf(x).
     """
-    # TODO (Thành viên 1):
-    # Bước 1: Nếu seed is not None, gọi np.random.seed(seed).
-    # Bước 2: Dùng np.random.uniform để sinh x1 trong x1_range và x2 trong x2_range.
-    # Bước 3: Ghép lại thành X có kích thước (n_samples, 2).
-    # Bước 4: Gọi hàm gaussian_2d_pdf(X, mu, cov) để tính y.
-    # Bước 5: Trả về (X, y).
-    raise NotImplementedError("TODO (Thành viên 1): Hãy triển khai hàm generate_samples.")
+    if isinstance(n_samples, bool) or not isinstance(n_samples, (int, np.integer)) or n_samples <= 0:
+        raise ValueError("n_samples phải là số nguyên dương.")
+    for bounds in (x1_range, x2_range):
+        if len(bounds) != 2 or not np.isfinite(bounds).all() or bounds[0] >= bounds[1]:
+            raise ValueError("Mỗi khoảng phải gồm hai số hữu hạn với cận dưới nhỏ hơn cận trên.")
+    rng = np.random.default_rng(seed)
+    x1 = rng.uniform(*x1_range, size=n_samples)
+    x2 = rng.uniform(*x2_range, size=n_samples)
+    X = np.column_stack((x1, x2))
+    return X, gaussian_2d_pdf(X, mu, cov)
 
 
 def save_dataset_to_csv(X: np.ndarray, y: np.ndarray, file_path: str) -> None:
     """
     Lưu dữ liệu X (2 cột) và y (1 cột) vào file CSV với header [x1, x2, y].
     """
-    # TODO (Thành viên 1):
-    # Tạo DataFrame từ X và y, đảm bảo thư mục cha tồn tại (os.makedirs), lưu ra file_path.
-    raise NotImplementedError("TODO (Thành viên 1): Hãy triển khai hàm save_dataset_to_csv.")
+    X, y = np.asarray(X), np.asarray(y)
+    if X.ndim != 2 or X.shape[1] != 2 or y.shape != (len(X), 1):
+        raise ValueError("X phải có shape (N, 2) và y phải có shape (N, 1).")
+    if not np.isfinite(X).all() or not np.isfinite(y).all():
+        raise ValueError("Dữ liệu phải chứa các số hữu hạn.")
+    parent = os.path.dirname(os.path.abspath(file_path))
+    os.makedirs(parent, exist_ok=True)
+    pd.DataFrame(np.column_stack((X, y)), columns=["x1", "x2", "y"]).to_csv(file_path, index=False)
 
 
 def load_dataset_from_csv(file_path: str) -> Tuple[np.ndarray, np.ndarray]:
     """
     Đọc dữ liệu từ file CSV, trả về X có shape (N, 2) và y có shape (N, 1).
     """
-    # TODO (Thành viên 1):
-    # Đọc CSV bằng pandas, lấy cột 'x1', 'x2' làm X (float32) và cột 'y' làm y (float32).
-    raise NotImplementedError("TODO (Thành viên 1): Hãy triển khai hàm load_dataset_from_csv.")
+    df = pd.read_csv(file_path)
+    if list(df.columns) != ["x1", "x2", "y"]:
+        raise ValueError("File CSV phải có các cột x1, x2, y theo đúng thứ tự.")
+    values = df.to_numpy(dtype=np.float32)
+    if not np.isfinite(values).all():
+        raise ValueError("Dữ liệu CSV phải chứa các số hữu hạn.")
+    return values[:, :2], values[:, 2:3]
 
 
 def setup_standard_datasets(
@@ -112,9 +135,10 @@ def setup_standard_datasets(
     1. data/test_dataset_100.csv (đúng 100 mẫu, seed_data_gen cố định 42).
     2. data/train_val_pool.csv (5000 mẫu, seed_data_gen cố định 2024) để các thực nghiệm trích xuất.
     """
-    # TODO (Thành viên 1):
-    # Sinh và lưu test_dataset_100.csv và train_val_pool.csv.
-    raise NotImplementedError("TODO (Thành viên 1): Hãy triển khai hàm setup_standard_datasets.")
+    X_test, y_test = generate_samples(n_test, seed=test_seed)
+    X_pool, y_pool = generate_samples(n_pool, seed=pool_seed)
+    save_dataset_to_csv(X_test, y_test, os.path.join(data_dir, "test_dataset_100.csv"))
+    save_dataset_to_csv(X_pool, y_pool, os.path.join(data_dir, "train_val_pool.csv"))
 
 
 def get_train_val_split(
@@ -133,8 +157,12 @@ def get_train_val_split(
          D_200 ⊂ D_400 ⊂ ... ⊂ D_2000.
       3. Với Thực nghiệm B & C: cố định n_train = 1500 (lấy từ chỉ số 400 đến 1900).
     """
-    # TODO (Thành viên 1):
-    # Trích xuất và trả về (X_train, y_train, X_val, y_val).
+    pool_X, pool_y = np.asarray(pool_X), np.asarray(pool_y)
+    if pool_X.ndim != 2 or pool_X.shape[1] != 2 or pool_y.shape != (len(pool_X), 1):
+        raise ValueError("pool_X phải có shape (N, 2) và pool_y phải có shape (N, 1).")
+    for name, count in (("n_train", n_train), ("n_val", n_val)):
+        if isinstance(count, bool) or not isinstance(count, (int, np.integer)) or count <= 0:
+            raise ValueError(f"{name} phải là số nguyên dương.")
     if n_val + n_train > len(pool_X):
         raise ValueError(f"Tổng mẫu yêu cầu ({n_val} val + {n_train} train) vượt quá kích thước pool ({len(pool_X)}).")
     X_val = pool_X[:n_val]
@@ -145,4 +173,5 @@ def get_train_val_split(
 
 
 if __name__ == "__main__":
-    print("--- KIỂM TRA MODULE DATA GENERATOR (THÀNH VIÊN 1) ---")
+    setup_standard_datasets()
+    print("Đã tạo data/test_dataset_100.csv và data/train_val_pool.csv.")

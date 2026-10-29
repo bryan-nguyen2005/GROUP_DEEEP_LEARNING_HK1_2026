@@ -42,9 +42,26 @@ def plot_3d_scatter(
     save_path: Optional[str] = None
 ) -> None:
     """Vẽ biểu đồ phân tán 3D các điểm dữ liệu (x1, x2, y)."""
-    # TODO (Thành viên 1):
-    # ax.scatter(X[:, 0], X[:, 1], y, c=y, cmap='viridis'). Lưu hình nếu có save_path.
-    raise NotImplementedError("TODO (Thành viên 1): Hãy triển khai hàm plot_3d_scatter.")
+    X = np.asarray(X)
+    y = np.asarray(y).reshape(-1)
+    if X.ndim != 2 or X.shape[1] != 2 or len(X) != len(y) or len(X) == 0:
+        raise ValueError("X phải có shape (N, 2), y có N giá trị và N > 0.")
+    if not np.isfinite(X).all() or not np.isfinite(y).all():
+        raise ValueError("Dữ liệu phải chứa các số hữu hạn.")
+    fig = plt.figure(figsize=(9, 7))
+    try:
+        ax = fig.add_subplot(111, projection="3d")
+        points = ax.scatter(X[:, 0], X[:, 1], y, c=y, cmap="viridis", s=24)
+        ax.set(xlabel="x1", ylabel="x2", zlabel="Mật độ y", title=title)
+        fig.colorbar(points, ax=ax, shrink=0.65, pad=0.12, label="Mật độ y")
+        fig.tight_layout()
+        if save_path is not None:
+            os.makedirs(os.path.dirname(os.path.abspath(save_path)), exist_ok=True)
+            fig.savefig(save_path, dpi=300, bbox_inches="tight")
+        else:
+            plt.show()
+    finally:
+        plt.close(fig)
 
 
 def plot_ground_truth_surface(
@@ -55,9 +72,31 @@ def plot_ground_truth_surface(
     save_path: Optional[str] = None
 ) -> None:
     """Vẽ bề mặt 3D hàm Gaussian lý thuyết trên lưới điểm đều (Meshgrid)."""
-    # TODO (Thành viên 1):
-    # np.meshgrid -> pdf_func -> ax.plot_surface(X1, X2, Y, cmap='coolwarm').
-    raise NotImplementedError("TODO (Thành viên 1): Hãy triển khai hàm plot_ground_truth_surface.")
+    if isinstance(grid_size, bool) or not isinstance(grid_size, int) or grid_size < 2:
+        raise ValueError("grid_size phải là số nguyên từ 2 trở lên.")
+    for bounds in (x1_range, x2_range):
+        if len(bounds) != 2 or not np.isfinite(bounds).all() or bounds[0] >= bounds[1]:
+            raise ValueError("Khoảng vẽ phải có cận dưới nhỏ hơn cận trên và hữu hạn.")
+    X1, X2 = np.meshgrid(np.linspace(*x1_range, grid_size), np.linspace(*x2_range, grid_size))
+    points = np.column_stack((X1.ravel(), X2.ravel()))
+    values = np.asarray(pdf_func(points))
+    if values.size != len(points) or not np.isfinite(values).all():
+        raise ValueError("pdf_func phải trả về một giá trị hữu hạn cho mỗi điểm.")
+    Y = values.reshape(X1.shape)
+    fig = plt.figure(figsize=(9, 7))
+    try:
+        ax = fig.add_subplot(111, projection="3d")
+        surface = ax.plot_surface(X1, X2, Y, cmap="coolwarm", linewidth=0, antialiased=True)
+        ax.set(xlabel="x1", ylabel="x2", zlabel="Mật độ y", title="Bề mặt Gaussian lý thuyết")
+        fig.colorbar(surface, ax=ax, shrink=0.65, pad=0.12, label="Mật độ y")
+        fig.tight_layout()
+        if save_path is not None:
+            os.makedirs(os.path.dirname(os.path.abspath(save_path)), exist_ok=True)
+            fig.savefig(save_path, dpi=300, bbox_inches="tight")
+        else:
+            plt.show()
+    finally:
+        plt.close(fig)
 
 
 def plot_learning_curve(
@@ -124,4 +163,9 @@ def plot_parity_and_residuals(
 
 
 if __name__ == "__main__":
-    print("--- KIỂM TRA MODULE VISUALIZE (THÀNH VIÊN 1 & 4) ---")
+    from src.data_generator import gaussian_2d_pdf, load_dataset_from_csv
+
+    X, y = load_dataset_from_csv("data/test_dataset_100.csv")
+    plot_3d_scatter(X, y, title="100 mẫu test", save_path="figures/test_3d_scatter.png")
+    plot_ground_truth_surface(gaussian_2d_pdf, save_path="figures/ground_truth_surface.png")
+    print("Đã tạo hai hình 3D trong thư mục figures.")
