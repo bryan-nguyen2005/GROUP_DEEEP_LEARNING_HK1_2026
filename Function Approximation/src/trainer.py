@@ -1,6 +1,5 @@
 """
 ================================================================================
-KHUNG SƯỜN MÃ NGUỒN (SKELETON TEMPLATE)
 MODULE: trainer.py
 PHỤ TRÁCH: THÀNH VIÊN 2 (Training Pipeline & Exp A)
 MÔ TẢ NHIỆM VỤ:
@@ -59,10 +58,16 @@ class EarlyStopping:
         Nếu tốt hơn kỷ lục cũ -> lưu checkpoint mô hình qua torch.save(model.state_dict(), path).
         Nếu không cải thiện -> tăng counter; nếu counter >= patience -> đặt self.early_stop = True.
         """
-        # TODO (Thành viên 2):
-        # Triển khai logic so sánh val_loss với self.best_loss - self.min_delta.
-        # Lưu checkpoint khi đạt loss tốt nhất và reset counter = 0.
-        raise NotImplementedError("TODO (Thành viên 2): Hãy hoàn thiện lớp EarlyStopping.")
+        if val_loss < self.best_loss - self.min_delta:
+            self.best_loss = val_loss
+            self.best_epoch = epoch
+            self.counter = 0
+            torch.save(model.state_dict(), self.checkpoint_path)
+        else:
+            self.counter += 1
+            if self.counter >= self.patience:
+                self.early_stop = True
+        return self.early_stop
 
 
 def create_dataloader(
@@ -72,9 +77,10 @@ def create_dataloader(
     shuffle: bool = True
 ) -> DataLoader:
     """Chuyển đổi dữ liệu X, y từ numpy array thành PyTorch DataLoader."""
-    # TODO (Thành viên 2):
-    # TensorDataset(torch.tensor(X, float32), torch.tensor(y, float32)) -> DataLoader
-    raise NotImplementedError("TODO (Thành viên 2): Hãy triển khai hàm create_dataloader.")
+    X_tensor = torch.tensor(X, dtype=torch.float32)
+    y_tensor = torch.tensor(y, dtype=torch.float32)
+    dataset = TensorDataset(X_tensor, y_tensor)
+    return DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
 
 
 def train_one_epoch(
@@ -88,9 +94,24 @@ def train_one_epoch(
     Huấn luyện mô hình trong 1 epoch:
     model.train() -> zero_grad() -> forward -> loss -> backward -> optimizer.step().
     """
-    # TODO (Thành viên 2):
-    # Triển khai vòng lặp huấn luyện chuẩn PyTorch.
-    raise NotImplementedError("TODO (Thành viên 2): Hãy triển khai hàm train_one_epoch.")
+    model.train()
+    running_loss = 0.0
+    total_samples = 0
+    for inputs, targets in dataloader:
+        inputs = inputs.to(device)
+        targets = targets.to(device)
+
+        optimizer.zero_grad()
+        outputs = model(inputs)
+        loss = criterion(outputs, targets)
+        loss.backward()
+        optimizer.step()
+
+        batch_size = inputs.size(0)
+        running_loss += loss.item() * batch_size
+        total_samples += batch_size
+
+    return running_loss / max(total_samples, 1)
 
 
 def evaluate_model(
@@ -103,9 +124,31 @@ def evaluate_model(
     Đánh giá mô hình trên tập validation hoặc test với model.eval() và with torch.no_grad().
     Trả về: (avg_loss, y_true_all, y_pred_all)
     """
-    # TODO (Thành viên 2):
-    # Triển khai vòng lặp đánh giá không cập nhật gradient.
-    raise NotImplementedError("TODO (Thành viên 2): Hãy triển khai hàm evaluate_model.")
+    model.eval()
+    running_loss = 0.0
+    total_samples = 0
+    y_true_list = []
+    y_pred_list = []
+
+    with torch.no_grad():
+        for inputs, targets in dataloader:
+            inputs = inputs.to(device)
+            targets = targets.to(device)
+
+            outputs = model(inputs)
+            loss = criterion(outputs, targets)
+
+            batch_size = inputs.size(0)
+            running_loss += loss.item() * batch_size
+            total_samples += batch_size
+
+            y_true_list.append(targets.cpu().numpy())
+            y_pred_list.append(outputs.cpu().numpy())
+
+    avg_loss = running_loss / max(total_samples, 1)
+    y_true_all = np.vstack(y_true_list) if y_true_list else np.empty((0, 1))
+    y_pred_all = np.vstack(y_pred_list) if y_pred_list else np.empty((0, 1))
+    return avg_loss, y_true_all, y_pred_all
 
 
 def train_mlp_pipeline(
@@ -137,10 +180,83 @@ def train_mlp_pipeline(
         - "history": pd.DataFrame lịch sử loss qua các epoch
         - "checkpoint_path": đường dẫn checkpoint đã lưu
     """
-    # TODO (Thành viên 2):
-    # Triển khai pipeline huấn luyện theo các bước trên.
-    raise NotImplementedError("TODO (Thành viên 2): Hãy triển khai hàm train_mlp_pipeline.")
+    if device is None:
+        device = torch.device("cpu")
+    model.to(device)
+
+    criterion = nn.MSELoss()
+    if optimizer_name.lower() == "adam":
+        optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    elif optimizer_name.lower() == "sgd":
+        optimizer = torch.optim.SGD(model.parameters(), lr=lr)
+    else:
+        raise ValueError(f"Optimizer {optimizer_name} không được hỗ trợ.")
+
+    early_stopping = EarlyStopping(patience=patience, checkpoint_path=checkpoint_path)
+
+    history_records = []
+    for epoch in range(1, epochs + 1):
+        t0 = time.perf_counter()
+        train_loss = train_one_epoch(model, train_loader, criterion, optimizer, device)
+        val_loss, _, _ = evaluate_model(model, val_loader, criterion, device)
+        epoch_time = time.perf_counter() - t0
+
+        history_records.append({
+            "epoch": epoch,
+            "train_loss": train_loss,
+            "val_loss": val_loss,
+            "epoch_time_sec": epoch_time
+        })
+
+        if verbose and (epoch % 10 == 0 or epoch == 1 or epoch == epochs):
+            print(f"Epoch [{epoch:03d}/{epochs:03d}] - Train Loss: {train_loss:.6f} - Val Loss: {val_loss:.6f} - Time: {epoch_time:.3f}s")
+
+        if early_stopping(val_loss, model, epoch):
+            if verbose:
+                print(f"Early stopping kích hoạt tại epoch {epoch}. Kỷ lục tốt nhất tại epoch {early_stopping.best_epoch}.")
+            break
+
+    history_df = pd.DataFrame(history_records)
+
+    if history_csv_path is not None:
+        os.makedirs(os.path.dirname(os.path.abspath(history_csv_path)), exist_ok=True)
+        history_df.to_csv(history_csv_path, index=False)
+
+    if os.path.exists(checkpoint_path):
+        model.load_state_dict(torch.load(checkpoint_path, map_location=device))
+
+    return {
+        "model": model,
+        "best_epoch": early_stopping.best_epoch,
+        "best_val_loss": early_stopping.best_loss,
+        "total_epochs": len(history_records),
+        "history": history_df,
+        "checkpoint_path": checkpoint_path
+    }
 
 
 if __name__ == "__main__":
     print("--- KIỂM TRA MODULE TRAINER (THÀNH VIÊN 2) ---")
+    from src.models import GaussianMLP
+    dummy_x = np.random.randn(100, 2).astype(np.float32)
+    dummy_y = np.random.randn(100, 1).astype(np.float32)
+
+    tr_loader = create_dataloader(dummy_x[:70], dummy_y[:70], batch_size=16)
+    va_loader = create_dataloader(dummy_x[70:], dummy_y[70:], batch_size=16, shuffle=False)
+
+    test_model = GaussianMLP(input_dim=2, output_dim=1, num_hidden_layers=1, hidden_units=16)
+    ckpt_test = "checkpoints/test_checkpoint.pth"
+    hist_test = "logs/test_history.csv"
+
+    res = train_mlp_pipeline(
+        test_model, tr_loader, va_loader, epochs=5, lr=0.01,
+        checkpoint_path=ckpt_test, history_csv_path=hist_test, verbose=True
+    )
+    print("Kết quả train thử nghiệm:")
+    print(f"- Best epoch: {res['best_epoch']}, Best val loss: {res['best_val_loss']:.6f}")
+    assert os.path.exists(ckpt_test), "Checkpoint chưa được tạo!"
+    assert os.path.exists(hist_test), "History CSV chưa được tạo!"
+    # Dọn dẹp file test
+    if os.path.exists(ckpt_test): os.remove(ckpt_test)
+    if os.path.exists(hist_test): os.remove(hist_test)
+    print("✅ Kiểm tra module trainer thành công!")

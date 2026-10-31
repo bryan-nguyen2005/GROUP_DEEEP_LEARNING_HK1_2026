@@ -1,6 +1,5 @@
 """
 ================================================================================
-KHUNG SƯỜN MÃ NGUỒN (SKELETON TEMPLATE)
 MODULE: visualize.py
 PHỤ TRÁCH: THÀNH VIÊN 1 & THÀNH VIÊN 4
 MÔ TẢ NHIỆM VỤ:
@@ -110,9 +109,37 @@ def plot_learning_curve(
     hoặc Dict chứa danh sách loss tương ứng.
     (TV4 hoàn thành từ Giai đoạn 1 để TV3 và TV4 sử dụng).
     """
-    # TODO (Thành viên 4):
-    # Vẽ Train Loss và Val Loss qua các epoch; hiển thị nhãn, chú giải, điểm epoch tốt nhất.
-    raise NotImplementedError("TODO (Thành viên 4): Hãy triển khai hàm plot_learning_curve.")
+    if isinstance(history_df, dict):
+        df = pd.DataFrame(history_df)
+    else:
+        df = history_df.copy()
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    try:
+        epochs = df["epoch"] if "epoch" in df.columns else np.arange(1, len(df) + 1)
+        if "train_loss" in df.columns:
+            ax.plot(epochs, df["train_loss"], label="Train Loss (MSE)", color="tab:blue", linewidth=2)
+        if "val_loss" in df.columns:
+            ax.plot(epochs, df["val_loss"], label="Val Loss (MSE)", color="tab:orange", linewidth=2)
+            best_idx = int(df["val_loss"].idxmin())
+            best_ep = epochs.iloc[best_idx] if hasattr(epochs, "iloc") else epochs[best_idx]
+            best_val = df["val_loss"].iloc[best_idx] if hasattr(df["val_loss"], "iloc") else df["val_loss"][best_idx]
+            ax.scatter([best_ep], [best_val], color="red", s=60, zorder=5, label=f"Best Val ({best_val:.5f} @ ep {best_ep})")
+
+        ax.set_xlabel("Epoch", fontsize=11)
+        ax.set_ylabel("Loss (MSE)", fontsize=11)
+        ax.set_title(title, fontsize=12, fontweight="bold")
+        ax.grid(True, linestyle="--", alpha=0.6)
+        ax.legend(fontsize=10)
+        fig.tight_layout()
+
+        if save_path is not None:
+            os.makedirs(os.path.dirname(os.path.abspath(save_path)), exist_ok=True)
+            fig.savefig(save_path, dpi=300, bbox_inches="tight")
+        else:
+            plt.show()
+    finally:
+        plt.close(fig)
 
 
 def plot_experiment_trend(
@@ -130,9 +157,33 @@ def plot_experiment_trend(
     Vẽ đồ thị sai số theo biến độc lập (hỗ trợ vẽ các đường Train/Val/Test và dải sai số ± std).
     (TV4 hoàn thành từ Giai đoạn 1 để bàn giao cho TV2 và TV3).
     """
-    # TODO (Thành viên 4):
-    # Vẽ các đường sai số theo x_vals; dùng ax.fill_between nếu có std_test; lưu hình nếu có save_path.
-    raise NotImplementedError("TODO (Thành viên 4): Hãy triển khai hàm plot_experiment_trend.")
+    fig, ax = plt.subplots(figsize=(9, 6))
+    try:
+        x_arr = np.array(x_vals)
+        ax.plot(x_arr, train_errors, marker='o', linewidth=2, color='tab:blue', label='Train MSE')
+        if val_errors is not None:
+            ax.plot(x_arr, val_errors, marker='s', linewidth=2, color='tab:orange', label='Validation MSE')
+        if test_errors is not None:
+            ax.plot(x_arr, test_errors, marker='^', linewidth=2, color='tab:green', label='Test MSE (Mean)')
+            if std_test is not None:
+                std_arr = np.array(std_test)
+                test_arr = np.array(test_errors)
+                ax.fill_between(x_arr, test_arr - std_arr, test_arr + std_arr, color='tab:green', alpha=0.2, label='Test MSE (±1 Std)')
+
+        ax.set_xlabel(x_label, fontsize=11)
+        ax.set_ylabel(y_label, fontsize=11)
+        ax.set_title(title, fontsize=13, fontweight='bold')
+        ax.grid(True, linestyle='--', alpha=0.6)
+        ax.legend(fontsize=10)
+        fig.tight_layout()
+
+        if save_path is not None:
+            os.makedirs(os.path.dirname(os.path.abspath(save_path)), exist_ok=True)
+            fig.savefig(save_path, dpi=300, bbox_inches='tight')
+        else:
+            plt.show()
+    finally:
+        plt.close(fig)
 
 
 def plot_3d_model_comparison(
@@ -145,8 +196,6 @@ def plot_3d_model_comparison(
     save_path: Optional[str] = None
 ) -> None:
     """Vẽ so sánh song song 2 bề mặt 3D: Hàm thật vs Mạng MLP dự đoán."""
-    # TODO (Thành viên 4):
-    # Tạo 2 subplot 3D: bên trái hàm thật Y_true, bên phải hàm dự đoán Y_pred từ model.
     raise NotImplementedError("TODO (Thành viên 4): Hãy triển khai hàm plot_3d_model_comparison.")
 
 
@@ -157,8 +206,6 @@ def plot_parity_and_residuals(
     save_path: Optional[str] = None
 ) -> None:
     """Vẽ Parity Plot (y vs ŷ kèm đường 45 độ y = ŷ) và biểu đồ phần dư (y - ŷ)."""
-    # TODO (Thành viên 4):
-    # Vẽ 2 subplot: Parity plot bên trái và Residuals plot bên phải.
     raise NotImplementedError("TODO (Thành viên 4): Hãy triển khai hàm plot_parity_and_residuals.")
 
 
