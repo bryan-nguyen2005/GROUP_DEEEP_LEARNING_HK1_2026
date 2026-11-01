@@ -1,15 +1,6 @@
 """
-================================================================================
-MODULE: metrics.py
-PHỤ TRÁCH: THÀNH VIÊN 2 (Training Pipeline & Exp A)
-MÔ TẢ NHIỆM VỤ:
-    1. Cài đặt các hàm đo lường sai số hồi quy:
-        - MSE (Mean Squared Error) - chỉ số chính theo yêu cầu đề bài.
-        - MAE (Mean Absolute Error) - chỉ số bổ sung bắt buộc.
-        - RMSE (Root Mean Squared Error) - chỉ số bổ sung bắt buộc.
-        - R2 Score (Hệ số xác định).
-    2. Hỗ trợ nhận đầu vào linh hoạt là numpy.ndarray hoặc torch.Tensor.
-================================================================================
+Module: metrics.py
+Các hàm tính chỉ số đánh giá hồi quy: MSE, MAE, RMSE và R2 Score.
 """
 
 import sys
@@ -98,4 +89,4 @@ if __name__ == "__main__":
     metrics = compute_all_metrics(y_t, y_p)
     print("Kết quả tính thử metrics:", metrics)
     assert abs(metrics["mse"] - 0.025) < 1e-6, "MSE tính chưa chính xác!"
-    print("✅ Kiểm tra module metrics thành công!")
+    print("Kiểm tra module metrics thành công.")

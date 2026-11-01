@@ -1,16 +1,7 @@
 """
-================================================================================
-MODULE: trainer.py
-PHỤ TRÁCH: THÀNH VIÊN 2 (Training Pipeline & Exp A)
-MÔ TẢ NHIỆM VỤ:
-    1. Cài đặt hàm đóng gói numpy array thành PyTorch DataLoader (dùng TensorDataset).
-    2. Cài đặt vòng lặp huấn luyện 1 epoch: forward -> loss -> zero_grad -> backward -> step.
-    3. Cài đặt hàm đánh giá mô hình với model.eval() và torch.no_grad().
-    4. Cài đặt lớp EarlyStopping để tự động lưu checkpoint trọng số model tốt nhất theo val loss.
-    5. Cài đặt pipeline huấn luyện hoàn chỉnh ghi nhận log theo từng epoch ra DataFrame/CSV:
-       - Trả về Dict chuẩn: model, best_epoch, best_val_loss, total_epochs, history, checkpoint_path.
-       - Hỗ trợ tham số history_csv_path để lưu lịch sử loss theo epoch cho TẤT CẢ các runs.
-================================================================================
+Module: trainer.py
+Cài đặt DataLoader, vòng lặp huấn luyện từng epoch, cơ chế dừng sớm (EarlyStopping)
+và lưu/nạp checkpoint trọng số tốt nhất theo Validation Loss.
 """
 
 import os
@@ -48,6 +39,7 @@ class EarlyStopping:
         self.checkpoint_path = checkpoint_path
         self.counter = 0
         self.best_loss = float("inf")
+        self.patience_best_loss = float("inf")
         self.early_stop = False
         self.best_epoch = 0
         os.makedirs(os.path.dirname(os.path.abspath(checkpoint_path)), exist_ok=True)
@@ -55,14 +47,16 @@ class EarlyStopping:
     def __call__(self, val_loss: float, model: nn.Module, epoch: int) -> bool:
         """
         Kiểm tra val_loss của epoch hiện tại.
-        Nếu tốt hơn kỷ lục cũ -> lưu checkpoint mô hình qua torch.save(model.state_dict(), path).
-        Nếu không cải thiện -> tăng counter; nếu counter >= patience -> đặt self.early_stop = True.
+        Lưu checkpoint khi loss thấp hơn mọi epoch trước. Bộ đếm patience chỉ
+        được đặt lại khi cải thiện vượt min_delta so với mốc cải thiện đáng kể.
         """
-        if val_loss < self.best_loss - self.min_delta:
+        if val_loss < self.best_loss:
             self.best_loss = val_loss
             self.best_epoch = epoch
-            self.counter = 0
             torch.save(model.state_dict(), self.checkpoint_path)
+        if val_loss < self.patience_best_loss - self.min_delta:
+            self.patience_best_loss = val_loss
+            self.counter = 0
         else:
             self.counter += 1
             if self.counter >= self.patience:
@@ -259,4 +253,4 @@ if __name__ == "__main__":
     # Dọn dẹp file test
     if os.path.exists(ckpt_test): os.remove(ckpt_test)
     if os.path.exists(hist_test): os.remove(hist_test)
-    print("✅ Kiểm tra module trainer thành công!")
+    print("Kiểm tra module trainer thành công.")

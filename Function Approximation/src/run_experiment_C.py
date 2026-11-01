@@ -1,33 +1,7 @@
 """
-================================================================================
-SCRIPT: run_experiment_C.py
-PHỤ TRÁCH: THÀNH VIÊN 3 (Experiments B & C Lead)
-MÔ TẢ NHIỆM VỤ:
-    - Thực hiện Thực nghiệm C: Khảo sát ảnh hưởng của Độ sâu mạng MLP (C - Hidden Layers).
-    - Cấu hình mạng: Số tầng ẩn C in [1, 2, 3, 4, 5], CỐ ĐỊNH 32 NƠ-RON TRÊN MỖI TẦNG ẨN.
-    - NGUYÊN TẮC CÔNG BẰNG & CHỐNG RÒ RỈ DỮ LIỆU (Zero Data Leakage):
-        + Cố định tập Train (N = 1500 mẫu, chỉ số iloc[400:1900] của train_val_pool.csv).
-        + Cố định tập Validation (N = 400 mẫu, chỉ số iloc[0:400] của train_val_pool.csv).
-        + Tập Test: 100 mẫu độc lập từ data/test_dataset_100.csv (chỉ dùng đo ngoại kiểm sau huấn luyện).
-        + Cố định toàn bộ siêu tham số baseline khác (Adam lr=0.005, batch 32, epochs 150, ReLU).
-        + Biến duy nhất thay đổi là số tầng ẩn C.
-    - ĐẦU RA BẮT BUỘC THEO ĐỀ BÀI:
-        + Bảng/đồ thị test error (MSE, MAE, RMSE).
-        + Loss hội tụ và epoch tối ưu.
-        + Thời gian huấn luyện (Training Time tính bằng giây).
-    - Giao thức Đa-seed:
-        + Chạy 3 seeds cố định: [42, 100, 2024] cho khởi tạo trọng số và DataLoader.
-    - Xuất dữ liệu chuẩn Schema đầy đủ tham số độc lập (Self-contained):
-        + logs/raw_runs_exp_C.csv: [run_id, exp_name, seed, param_name, param_value, num_layers, hidden_units,
-          activation, lr, batch_size, max_epochs, patience, n_train, n_val, total_epochs, best_epoch,
-          train_mse, val_mse, test_mse, train_time_sec, checkpoint_file, history_file]
-        + logs/exp_C_results.csv: [param_value, train_mse_mean, train_mse_std, val_mse_mean, val_mse_std,
-          test_mse_mean, test_mse_std, best_epoch_mean, train_time_mean]
-        + Lưu file history từng run: logs/history_exp_C_depth_{C}_seed{seed}.csv
-        + figures/exp_C_depth_vs_error.png: đồ thị sai số theo C (plot_experiment_trend).
-        + figures/exp_C_depth_vs_time.png: biểu đồ cột thời gian huấn luyện theo C.
-        + figures/exp_C_loss_convergence.png: đồ thị đường cong hội tụ loss theo epoch.
-================================================================================
+Script: run_experiment_C.py
+Thực nghiệm C: Khảo sát ảnh hưởng của độ sâu mạng C (số tầng ẩn từ 1 đến 5,
+cố định 32 nơ-ron/tầng) và đo thời gian huấn luyện qua 3 random seed [42, 100, 2024].
 """
 
 import os
@@ -196,7 +170,7 @@ def run_experiment_C(
     raw_runs_df = pd.DataFrame(raw_runs)
     raw_runs_csv = os.path.join(logs_dir, "raw_runs_exp_C.csv")
     raw_runs_df.to_csv(raw_runs_csv, index=False)
-    print(f"\n✅ Đã lưu nhật ký chi tiết {len(raw_runs_df)} lần chạy vào: {raw_runs_csv}")
+    print(f"\nĐã lưu nhật ký chi tiết {len(raw_runs_df)} lần chạy vào: {raw_runs_csv}")
 
     # Tính bảng tổng hợp Mean +- Std theo mốc C
     summary_rows = []
@@ -217,7 +191,7 @@ def run_experiment_C(
     summary_df = pd.DataFrame(summary_rows)
     summary_csv = os.path.join(logs_dir, "exp_C_results.csv")
     summary_df.to_csv(summary_csv, index=False)
-    print(f"✅ Đã lưu bảng kết quả tổng hợp vào: {summary_csv}")
+    print(f"Đã lưu bảng kết quả tổng hợp vào: {summary_csv}")
 
     # In bảng tổng hợp ra console
     print("\n" + "=" * 80)
@@ -238,7 +212,7 @@ def run_experiment_C(
         std_test=summary_df["test_mse_std"].tolist(),
         save_path=error_fig_path
     )
-    print(f"✅ Đã tạo đồ thị sai số theo độ sâu vào: {error_fig_path}")
+    print(f"Đã tạo đồ thị sai số theo độ sâu vào: {error_fig_path}")
 
     # Bước 5: Vẽ biểu đồ cột thời gian huấn luyện theo C
     time_fig_path = os.path.join(figures_dir, "exp_C_depth_vs_time.png")
@@ -280,7 +254,7 @@ def run_experiment_C(
         ax.grid(True, linestyle="--", alpha=0.5, axis="y")
         fig.tight_layout()
         fig.savefig(time_fig_path, dpi=300, bbox_inches="tight")
-        print(f"✅ Đã tạo biểu đồ thời gian huấn luyện vào: {time_fig_path}")
+        print(f"Đã tạo biểu đồ thời gian huấn luyện vào: {time_fig_path}")
     finally:
         plt.close(fig)
 
@@ -313,7 +287,7 @@ def run_experiment_C(
         ax.legend(fontsize=10)
         fig.tight_layout()
         fig.savefig(loss_fig_path, dpi=300, bbox_inches="tight")
-        print(f"✅ Đã tạo biểu đồ đường cong hội tụ loss vào: {loss_fig_path}")
+        print(f"Đã tạo biểu đồ đường cong hội tụ loss vào: {loss_fig_path}")
     finally:
         plt.close(fig)
 

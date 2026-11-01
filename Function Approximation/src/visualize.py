@@ -1,17 +1,7 @@
 """
-================================================================================
-MODULE: visualize.py
-PHỤ TRÁCH: THÀNH VIÊN 1 & THÀNH VIÊN 4
-MÔ TẢ NHIỆM VỤ:
-    1. Cài đặt hàm vẽ phân tán 3D Scatter (TV1) -> figures/test_3d_scatter.png.
-    2. Cài đặt hàm vẽ bề mặt 3D lý thuyết (TV1) -> figures/ground_truth_surface.png.
-    3. Cài đặt hàm vẽ đường cong học tập (TV4 - hoàn thành từ Giai đoạn 1):
-       Dùng cho Thực nghiệm C (figures/exp_C_loss_convergence.png) và Best Model (figures/best_model_learning_curve.png).
-    4. Cài đặt hàm vẽ đồ thị xu hướng sai số theo biến độc lập (TV4 - hoàn thành từ Giai đoạn 1):
-       Bàn giao ngay để TV2 vẽ exp_A_samples_vs_error.png và TV3 vẽ exp_B_width_vs_error.png, exp_C_depth_vs_error.png.
-    5. Cài đặt hàm vẽ đối sánh 3D song song: Bề mặt thật vs MLP dự đoán (TV4) -> figures/best_model_3d_comparison.png.
-    6. Cài đặt hàm vẽ Parity Plot và Residuals (TV4) -> figures/best_model_parity_and_residuals.png.
-================================================================================
+Module: visualize.py
+Các hàm vẽ biểu đồ trực quan: 3D Scatter, mặt lý thuyết 3D, đường cong học tập,
+xu hướng sai số theo tham số thực nghiệm, Parity/Residual plot và đối sánh bề mặt 3D.
 """
 
 import os
@@ -28,6 +18,7 @@ if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
 import numpy as np
+import torch
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from typing import Optional, List, Union, Dict
@@ -195,8 +186,58 @@ def plot_3d_model_comparison(
     grid_size: int = 60,
     save_path: Optional[str] = None
 ) -> None:
-    """Vẽ so sánh song song 2 bề mặt 3D: Hàm thật vs Mạng MLP dự đoán."""
-    raise NotImplementedError("TODO (Thành viên 4): Hãy triển khai hàm plot_3d_model_comparison.")
+    """
+    Vẽ so sánh song song 2 bề mặt 3D: Hàm thật vs Mạng MLP dự đoán.
+    Cả hai bề mặt dùng chung thang màu (vmin/vmax) để đối sánh trực quan công bằng.
+    (TV4 hoàn thành Giai đoạn 3).
+    """
+    if isinstance(grid_size, bool) or not isinstance(grid_size, int) or grid_size < 2:
+        raise ValueError("grid_size phải là số nguyên từ 2 trở lên.")
+    for bounds in (x1_range, x2_range):
+        if len(bounds) != 2 or not np.isfinite(bounds).all() or bounds[0] >= bounds[1]:
+            raise ValueError("Khoảng vẽ phải có cận dưới nhỏ hơn cận trên và hữu hạn.")
+
+    X1, X2 = np.meshgrid(np.linspace(*x1_range, grid_size), np.linspace(*x2_range, grid_size))
+    points = np.column_stack((X1.ravel(), X2.ravel()))
+
+    Y_true = np.asarray(pdf_func(points)).reshape(X1.shape)
+    if Y_true.shape != X1.shape or not np.isfinite(Y_true).all():
+        raise ValueError("pdf_func phải trả về một giá trị hữu hạn cho mỗi điểm lưới.")
+
+    model.eval()
+    with torch.no_grad():
+        preds = model(torch.tensor(points, dtype=torch.float32).to(device))
+    Y_pred = preds.detach().cpu().numpy().astype(np.float64).reshape(X1.shape)
+
+    vmin = float(min(Y_true.min(), Y_pred.min()))
+    vmax = float(max(Y_true.max(), Y_pred.max()))
+
+    fig = plt.figure(figsize=(14, 6))
+    try:
+        ax_true = fig.add_subplot(121, projection="3d")
+        surf_true = ax_true.plot_surface(
+            X1, X2, Y_true, cmap="coolwarm", vmin=vmin, vmax=vmax,
+            linewidth=0, antialiased=True
+        )
+        ax_true.set(xlabel="x1", ylabel="x2", zlabel="Mật độ y", title="Bề mặt Gaussian lý thuyết")
+
+        ax_pred = fig.add_subplot(122, projection="3d")
+        surf_pred = ax_pred.plot_surface(
+            X1, X2, Y_pred, cmap="coolwarm", vmin=vmin, vmax=vmax,
+            linewidth=0, antialiased=True
+        )
+        ax_pred.set(xlabel="x1", ylabel="x2", zlabel="Mật độ y", title="Bề mặt MLP dự đoán")
+
+        fig.colorbar(surf_pred, ax=[ax_true, ax_pred], shrink=0.6, pad=0.08, label="Mật độ y")
+        fig.suptitle("Đối sánh bề mặt 3D: Hàm thật vs Mô hình MLP", fontsize=13, fontweight="bold", y=0.98)
+        fig.subplots_adjust(top=0.85, left=0.03, right=0.95, bottom=0.05, wspace=0.05)
+        if save_path is not None:
+            os.makedirs(os.path.dirname(os.path.abspath(save_path)), exist_ok=True)
+            fig.savefig(save_path, dpi=300, bbox_inches="tight")
+        else:
+            plt.show()
+    finally:
+        plt.close(fig)
 
 
 def plot_parity_and_residuals(
@@ -205,8 +246,63 @@ def plot_parity_and_residuals(
     title_prefix: str = "Tập Test",
     save_path: Optional[str] = None
 ) -> None:
-    """Vẽ Parity Plot (y vs ŷ kèm đường 45 độ y = ŷ) và biểu đồ phần dư (y - ŷ)."""
-    raise NotImplementedError("TODO (Thành viên 4): Hãy triển khai hàm plot_parity_and_residuals.")
+    """
+    Vẽ Parity Plot (y vs ŷ kèm đường 45 độ y = ŷ) và biểu đồ phần dư (y - ŷ vs ŷ).
+    (TV4 hoàn thành Giai đoạn 3).
+    """
+    y_true = np.asarray(y_true, dtype=np.float64).reshape(-1)
+    y_pred = np.asarray(y_pred, dtype=np.float64).reshape(-1)
+    if len(y_true) == 0 or len(y_true) != len(y_pred):
+        raise ValueError("y_true và y_pred phải cùng độ dài và khác rỗng.")
+    if not np.isfinite(y_true).all() or not np.isfinite(y_pred).all():
+        raise ValueError("y_true và y_pred phải chứa các số hữu hạn.")
+    residuals = y_true - y_pred
+
+    fig, axes = plt.subplots(1, 2, figsize=(13, 5.5))
+    try:
+        # Panel trái: Parity Plot y vs ŷ kèm đường chuẩn 45 độ
+        ax_parity = axes[0]
+        lo = float(min(y_true.min(), y_pred.min()))
+        hi = float(max(y_true.max(), y_pred.max()))
+        margin = 0.05 * (hi - lo) if hi > lo else 0.05
+        lo -= margin
+        hi += margin
+        ax_parity.scatter(
+            y_true, y_pred, c="tab:blue", s=34, alpha=0.75,
+            edgecolors="white", linewidths=0.5, label="Mẫu dự đoán"
+        )
+        ax_parity.plot([lo, hi], [lo, hi], color="red", linestyle="--", linewidth=1.8,
+                       label="Đường chuẩn $y = \\hat{y}$")
+        ax_parity.set_xlim(lo, hi)
+        ax_parity.set_ylim(lo, hi)
+        ax_parity.set_aspect("equal", adjustable="box")
+        ax_parity.set_xlabel("Giá trị thật $y$", fontsize=11)
+        ax_parity.set_ylabel("Giá trị dự đoán $\\hat{y}$", fontsize=11)
+        ax_parity.set_title(f"Parity Plot ({title_prefix})", fontsize=12, fontweight="bold")
+        ax_parity.grid(True, linestyle="--", alpha=0.6)
+        ax_parity.legend(fontsize=10)
+
+        # Panel phải: Residual Plot phần dư y - ŷ theo ŷ
+        ax_res = axes[1]
+        ax_res.scatter(
+            y_pred, residuals, c="tab:orange", s=34, alpha=0.75,
+            edgecolors="white", linewidths=0.5, label="Phần dư từng mẫu"
+        )
+        ax_res.axhline(0.0, color="red", linestyle="--", linewidth=1.8, label="Phần dư = 0")
+        ax_res.set_xlabel("Giá trị dự đoán $\\hat{y}$", fontsize=11)
+        ax_res.set_ylabel("Phần dư $y - \\hat{y}$", fontsize=11)
+        ax_res.set_title(f"Residual Plot ({title_prefix})", fontsize=12, fontweight="bold")
+        ax_res.grid(True, linestyle="--", alpha=0.6)
+        ax_res.legend(fontsize=10)
+
+        fig.tight_layout()
+        if save_path is not None:
+            os.makedirs(os.path.dirname(os.path.abspath(save_path)), exist_ok=True)
+            fig.savefig(save_path, dpi=300, bbox_inches="tight")
+        else:
+            plt.show()
+    finally:
+        plt.close(fig)
 
 
 if __name__ == "__main__":

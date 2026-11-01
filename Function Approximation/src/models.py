@@ -1,17 +1,7 @@
 """
-================================================================================
-KHUNG SƯỜN MÃ NGUỒN (SKELETON TEMPLATE)
-MODULE: models.py
-PHỤ TRÁCH: THÀNH VIÊN 1 (Data & Architecture Lead)
-MÔ TẢ NHIỆM VỤ:
-    1. Cài đặt hàm ánh xạ tên hàm kích hoạt sang torch.nn (ReLU làm baseline, LeakyReLU, Tanh, Sigmoid).
-    2. Cài đặt lớp mạng MLP tổng quát kế thừa torch.nn.Module:
-        - Tùy chỉnh số tầng ẩn C (num_hidden_layers).
-        - Tùy chỉnh số nơ-ron B (hidden_units) trên mỗi tầng.
-        - Tùy chỉnh hàm kích hoạt (activation), mặc định 'relu'.
-        - Có khởi tạo trọng số chuẩn (Xavier hoặc Kaiming).
-    3. Cài đặt hàm forward pass nhận đầu vào (batch_size, 2) và trả về (batch_size, 1).
-================================================================================
+Module: models.py
+Định nghĩa kiến trúc mạng Perceptron đa tầng (GaussianMLP) bằng PyTorch
+cho bài toán hồi quy xấp xỉ hàm mật độ Gaussian hai chiều.
 """
 
 import sys

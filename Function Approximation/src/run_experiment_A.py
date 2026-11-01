@@ -1,28 +1,7 @@
 """
-================================================================================
-SCRIPT: run_experiment_A.py
-PHỤ TRÁCH: THÀNH VIÊN 2 (Training Pipeline & Exp A)
-MÔ TẢ NHIỆM VỤ:
-    - Thực hiện Thực nghiệm A: Khảo sát ảnh hưởng của Quy mô dữ liệu huấn luyện (A).
-    - Các mốc giá trị của A: [200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000].
-    - NGUYÊN TẮC CÔNG BẰNG & CHỐNG RÒ RỈ DỮ LIỆU (Zero Data Leakage):
-        + Tập Validation: Đúng 400 mẫu đầu tiên từ data/train_val_pool.csv (iloc[0:400]) cố định.
-        + Tập con lồng nhau (Nested Subsets): Trích xuất theo chỉ số iloc[400 : 400+A] từ train_val_pool.csv
-          bảo đảm D_200 ⊂ D_400 ⊂ ... ⊂ D_2000 và tuyệt đối không trùng với tập Validation.
-        + Tập Test: 100 mẫu độc lập từ data/test_dataset_100.csv chỉ dùng đo ngoại kiểm sau khi đóng băng trọng số.
-    - Cấu hình Baseline chuẩn cố định:
-        + Kiến trúc: MLP 1 tầng ẩn, 64 nơ-ron, activation='relu'.
-        + Optimizer: Adam, Learning Rate = 0.005, Batch Size = 32.
-        + Số Epochs = 150, Early Stopping patience = 15 theo Validation Loss.
-        + Thiết bị: CPU (torch.device('cpu')).
-    - Giao thức Đa-seed:
-        + Chạy 3 seeds cố định: [42, 100, 2024] cho khởi tạo trọng số và DataLoader.
-    - Xuất dữ liệu chuẩn Schema đầy đủ tham số độc lập (Self-contained):
-        + logs/raw_runs_exp_A.csv
-        + logs/exp_A_results.csv
-        + logs/history_exp_A_samples_{A}_seed{seed}.csv
-        + figures/exp_A_samples_vs_error.png
-================================================================================
+Script: run_experiment_A.py
+Thực nghiệm A: Khảo sát ảnh hưởng của quy mô dữ liệu huấn luyện A
+trên các tập con lồng nhau [200..2000] qua 3 random seed [42, 100, 2024].
 """
 
 import os
@@ -159,9 +138,9 @@ def run_experiment_A(
             total_epochs = train_res["total_epochs"]
 
             # Đo lường MSE trên các tập
-            train_mse, _, _ = evaluate_model(best_model, train_loader, criterion, device)
-            val_mse, _, _ = evaluate_model(best_model, val_loader, criterion, device)
-            test_mse, _, _ = evaluate_model(best_model, test_loader, criterion, device)
+            train_mse, train_true, train_pred = evaluate_model(best_model, train_loader, criterion, device)
+            val_mse, val_true, val_pred = evaluate_model(best_model, val_loader, criterion, device)
+            test_mse, test_true, test_pred = evaluate_model(best_model, test_loader, criterion, device)
 
             print(f" -> Xong: Epoch dừng={total_epochs:2d} (Best={best_epoch:2d}) | Train MSE={train_mse:.6f} | Val MSE={val_mse:.6f} | Test MSE={test_mse:.6f} | Time={train_time:.2f}s")
 
@@ -186,6 +165,9 @@ def run_experiment_A(
                 "train_mse": float(train_mse),
                 "val_mse": float(val_mse),
                 "test_mse": float(test_mse),
+                "train_mae": float(compute_all_metrics(train_true, train_pred)["mae"]),
+                "val_mae": float(compute_all_metrics(val_true, val_pred)["mae"]),
+                "test_mae": float(compute_all_metrics(test_true, test_pred)["mae"]),
                 "train_time_sec": float(train_time),
                 "checkpoint_file": ckpt_filename,
                 "history_file": hist_filename
@@ -196,7 +178,7 @@ def run_experiment_A(
     raw_runs_df = pd.DataFrame(raw_runs)
     raw_runs_csv = os.path.join(logs_dir, "raw_runs_exp_A.csv")
     raw_runs_df.to_csv(raw_runs_csv, index=False)
-    print(f"\n✅ Đã lưu nhật ký chi tiết {len(raw_runs_df)} lần chạy vào: {raw_runs_csv}")
+    print(f"\nĐã lưu nhật ký chi tiết {len(raw_runs_df)} lần chạy vào: {raw_runs_csv}")
 
     # Tính bảng tổng hợp Mean +- Std theo mốc A
     summary_rows = []
@@ -210,6 +192,9 @@ def run_experiment_A(
             "val_mse_std": float(sub["val_mse"].std(ddof=1) if len(sub) > 1 else 0.0),
             "test_mse_mean": float(sub["test_mse"].mean()),
             "test_mse_std": float(sub["test_mse"].std(ddof=1) if len(sub) > 1 else 0.0),
+            **{f"{name}_mae_{stat}": float(getattr(sub[f"{name}_mae"], stat)())
+               if stat == "mean" or len(sub) > 1 else 0.0
+               for name in ("train", "val", "test") for stat in ("mean", "std")},
             "best_epoch_mean": float(sub["best_epoch"].mean()),
             "train_time_mean": float(sub["train_time_sec"].mean())
         })
@@ -217,7 +202,7 @@ def run_experiment_A(
     summary_df = pd.DataFrame(summary_rows)
     summary_csv = os.path.join(logs_dir, "exp_A_results.csv")
     summary_df.to_csv(summary_csv, index=False)
-    print(f"✅ Đã lưu bảng kết quả tổng hợp vào: {summary_csv}")
+    print(f"Đã lưu bảng kết quả tổng hợp vào: {summary_csv}")
 
     # In bảng tổng hợp ra console
     print("\n" + "=" * 80)
@@ -238,7 +223,7 @@ def run_experiment_A(
         std_test=summary_df["test_mse_std"].tolist(),
         save_path=fig_path
     )
-    print(f"✅ Đã tạo đồ thị sai số xuất bản vào: {fig_path}")
+    print(f"Đã tạo đồ thị sai số vào: {fig_path}")
     print("================================================================================")
     print("HOÀN THÀNH TOÀN DIỆN THỰC NGHIỆM A!")
     print("================================================================================")

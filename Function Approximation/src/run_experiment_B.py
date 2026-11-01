@@ -1,24 +1,7 @@
 """
-================================================================================
-SCRIPT: run_experiment_B.py
-PHỤ TRÁCH: THÀNH VIÊN 3 (Experiments B & C Lead)
-MÔ TẢ NHIỆM VỤ:
-    - Thực hiện Thực nghiệm B: Khảo sát ảnh hưởng của Độ rộng tầng ẩn (B - Hidden Units).
-    - Cấu hình mạng: MLP 1 tầng ẩn, số nơ-ron B in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 16, 32, 64].
-    - NGUYÊN TẮC CÔNG BẰNG & CHỐNG RÒ RỈ DỮ LIỆU (Zero Data Leakage):
-        + Cố định tập Train (N = 1500 mẫu, chỉ số iloc[400:1900] của train_val_pool.csv).
-        + Cố định tập Validation (N = 400 mẫu, chỉ số iloc[0:400] của train_val_pool.csv).
-        + Tập Test: 100 mẫu độc lập từ data/test_dataset_100.csv (chỉ dùng đo ngoại kiểm sau huấn luyện).
-        + Cố định mọi siêu tham số baseline khác (Adam lr=0.005, batch 32, epochs 150, activation='relu').
-        + Biến duy nhất thay đổi là B.
-    - Giao thức Đa-seed:
-        + Chạy 3 seeds cố định: [42, 100, 2024] cho khởi tạo trọng số và DataLoader.
-    - Xuất dữ liệu chuẩn Schema đầy đủ tham số độc lập (Self-contained):
-        + logs/raw_runs_exp_B.csv
-        + logs/exp_B_results.csv
-        + logs/history_exp_B_width_{B}_seed{seed}.csv
-        + figures/exp_B_width_vs_error.png
-================================================================================
+Script: run_experiment_B.py
+Thực nghiệm B: Khảo sát ảnh hưởng của độ rộng tầng ẩn B (số nơ-ron tầng ẩn)
+trên mạng MLP 1 tầng ẩn với 1.500 mẫu train qua 3 random seed [42, 100, 2024].
 """
 
 import os
@@ -186,7 +169,7 @@ def run_experiment_B(
     raw_runs_df = pd.DataFrame(raw_runs)
     raw_runs_csv = os.path.join(logs_dir, "raw_runs_exp_B.csv")
     raw_runs_df.to_csv(raw_runs_csv, index=False)
-    print(f"\n✅ Đã lưu nhật ký chi tiết {len(raw_runs_df)} lần chạy vào: {raw_runs_csv}")
+    print(f"\nĐã lưu nhật ký chi tiết {len(raw_runs_df)} lần chạy vào: {raw_runs_csv}")
 
     # Tính bảng tổng hợp Mean +- Std theo mốc B
     summary_rows = []
@@ -207,7 +190,7 @@ def run_experiment_B(
     summary_df = pd.DataFrame(summary_rows)
     summary_csv = os.path.join(logs_dir, "exp_B_results.csv")
     summary_df.to_csv(summary_csv, index=False)
-    print(f"✅ Đã lưu bảng kết quả tổng hợp vào: {summary_csv}")
+    print(f"Đã lưu bảng kết quả tổng hợp vào: {summary_csv}")
 
     # In bảng tổng hợp ra console
     print("\n" + "=" * 80)
@@ -228,7 +211,7 @@ def run_experiment_B(
         std_test=summary_df["test_mse_std"].tolist(),
         save_path=fig_path
     )
-    print(f"✅ Đã tạo đồ thị sai số xuất bản vào: {fig_path}")
+    print(f"Đã tạo đồ thị sai số vào: {fig_path}")
     print("================================================================================")
     print("HOÀN THÀNH TOÀN DIỆN THỰC NGHIỆM B!")
     print("================================================================================")

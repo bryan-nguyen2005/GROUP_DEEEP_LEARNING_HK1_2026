@@ -1,19 +1,7 @@
 """
-================================================================================
-KHUNG SƯỜN MÃ NGUỒN (SKELETON TEMPLATE)
-MODULE: data_generator.py
-PHỤ TRÁCH: THÀNH VIÊN 1 (Data & Architecture Lead)
-MÔ TẢ NHIỆM VỤ:
-    1. Cài đặt hàm tính mật độ xác suất Gaussian 2D theo đúng công thức giải tích.
-    2. Cài đặt hàm sinh ngẫu nhiên mẫu dữ liệu (X, y) trong miền [-2, 2] x [-4, 4].
-    3. Cài đặt các hàm lưu và đọc dữ liệu ra/vào file CSV.
-    4. Cài đặt hàm chuẩn bị 2 tập dữ liệu chuẩn:
-        - Tập Test độc lập cố định gồm đúng 100 mẫu (lưu vào data/test_dataset_100.csv, seed=42).
-        - Tập Data Pool gồm 5000 mẫu (lưu vào data/train_val_pool.csv, seed=2024).
-    5. Cài đặt hàm tiện ích get_train_val_split thực hiện phân chia lát cắt chỉ số cố định:
-        - Tập Val: 400 mẫu đầu tiên (iloc[0:400]).
-        - Tập Train: lấy từ Train Pool (iloc[400:400+n_train]), bảo đảm Zero Data Leakage.
-================================================================================
+Module: data_generator.py
+Sinh dữ liệu mẫu cho bài toán xấp xỉ hàm mật độ Gaussian hai chiều,
+lưu/đọc file CSV và chia tập dữ liệu Train/Validation theo lát cắt cố định.
 """
 
 import os
@@ -152,7 +140,7 @@ def get_train_val_split(
     - Tập Validation (n_val mẫu đầu tiên): pool_X[0:n_val], pool_y[0:n_val]
     - Tập Train (n_train mẫu tiếp theo): pool_X[n_val : n_val + n_train], pool_y[n_val : n_val + n_train]
     Bảo đảm:
-      1. Train và Validation tuyệt đối không có mẫu trùng lặp (Zero Data Leakage).
+      1. Train và Validation không có mẫu trùng lặp.
       2. Với Thực nghiệm A: n_train tăng dần tạo thành tập con lồng nhau nghiêm ngặt:
          D_200 ⊂ D_400 ⊂ ... ⊂ D_2000.
       3. Với Thực nghiệm B & C: cố định n_train = 1500 (lấy từ chỉ số 400 đến 1900).
