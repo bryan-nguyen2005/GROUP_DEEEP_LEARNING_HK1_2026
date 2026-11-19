@@ -1,0 +1,2 @@
+model,epochs,parameters,test_loss,test_accuracy,keras_test_loss,keras_test_accuracy,accuracy_delta_pp,fit_seconds,device,torch_version,torch_threads
+CNN,10,1817610,0.021016420841612853,0.9935,0.03192299669235945,0.9889,0.46000000000000485,615.8411318429999,cpu,2.15.0+cpu,6

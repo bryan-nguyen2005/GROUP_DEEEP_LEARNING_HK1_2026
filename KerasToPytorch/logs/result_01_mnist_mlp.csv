@@ -1,0 +1,2 @@
+model,epochs,parameters,test_loss,test_accuracy,keras_test_loss,keras_test_accuracy,accuracy_delta_pp,fit_seconds,device,torch_version,torch_threads
+MLP,20,669706,0.15894180111587047,0.9517,0.11284465673938393,0.9657,-1.4000000000000012,37.52240365199941,cpu,2.15.0+cpu,6

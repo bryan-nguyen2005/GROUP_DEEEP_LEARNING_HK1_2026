@@ -60,25 +60,25 @@ Toàn bộ 4 thành viên thống nhất áp dụng đúng bảng quy đổi k�
 
 ## III. PHÂN CÔNG NHIỆM VỤ CHI TIẾT CHO 4 THÀNH VIÊN (25% × 4)
 
-| STT | Họ và tên | MSSV | Nhiệm vụ kỹ thuật & Code PyTorch | Nhiệm vụ Báo cáo & Tài liệu | Tỷ lệ |
-|:---:|:---|:---:|:---|:---|:---:|
-| 1 | **Châu Quốc Bảo** | `3123411024` | **TV1:** Core `pytorch_core.py`, `00_keras_vs_pytorch_basics.ipynb`, **Bài 1 (MLP MNIST)** & **Bài 2 (CNN MNIST)** | Viết Chương 1 (Bảng ánh xạ API) & Chương 2 (Bài 1, 2) | 25% |
-| 2 | **Nguyễn Hoàng Long** | `3123411179` | **TV2:** **Bài 3 (Gender CNN: Baseline vs EarlyStopping+ReduceLR)** & **Bài 4 (FER CNN: No-Aug vs Augmentation)** | Viết Chương 3 (Bài 3, 4 & minh chứng 3 kỹ thuật huấn luyện) | 25% |
-| 3 | **Võ Huỳnh Minh Sang** | `3123411256` | **TV3:** **Bài 5 (CNN + TimeDistributed + LSTM MNIST Summation)**, bộ unit test kiểm tra shape/tái lập & bảng log tổng hợp đối chiếu Keras vs PyTorch | Viết Chương 4 (Bài 5 CNN-LSTM) & mục phân tích khác biệt cơ chế Keras vs PyTorch | 25% |
-| 4 | **Nguyễn Đình Cường** *(Nhóm trưởng)* | `3123411043` | **TV4:** **Bài 6 (Hand Depth Segmentation – SegNet)**, cập nhật `README.md` (PyTorch 2.x + Colab), `requirements.txt`, `visualize.py` | Viết Chương 5 (Bài 6 Segmentation) & Chương 6 (Tổng kết, phân công), biên tập Báo cáo & đóng gói nộp bài | 25% |
+| STT | Họ và tên              |     MSSV     | Nhiệm vụ kỹ thuật & Code PyTorch                                                                                                                      | Nhiệm vụ Báo cáo & Tài liệu                                                                              | Tỷ lệ |
+| :-: | :--------------------- | :----------: | :---------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------- | :---: |
+|  1  | **Nguyễn Đình Cường**  | `3123411043` | **TV1:** Core `pytorch_core.py`, `00_keras_vs_pytorch_basics.ipynb`, **Bài 1 (MLP MNIST)** & **Bài 2 (CNN MNIST)**                                    | Viết Chương 1 (Bảng ánh xạ API) & Chương 2 (Bài 1, 2)                                                    |  25%  |
+|  2  | ****Châu Quốc Bảo****  | `3123411024` | **TV2:** **Bài 3 (Gender CNN: Baseline vs EarlyStopping+ReduceLR)** & **Bài 4 (FER CNN: No-Aug vs Augmentation)**                                     | Viết Chương 3 (Bài 3, 4 & minh chứng 3 kỹ thuật huấn luyện)                                              |  25%  |
+|  3  | **Nguyễn Hoàng Long**  | `3123411179` | **TV3:** **Bài 5 (CNN + TimeDistributed + LSTM MNIST Summation)**, bộ unit test kiểm tra shape/tái lập & bảng log tổng hợp đối chiếu Keras vs PyTorch | Viết Chương 4 (Bài 5 CNN-LSTM) & mục phân tích khác biệt cơ chế Keras vs PyTorch                         |  25%  |
+|  4  | **Võ Huỳnh Minh Sang** | `3123411256` | **TV4:** **Bài 6 (Hand Depth Segmentation – SegNet)**, cập nhật `README.md` (PyTorch 2.x + Colab), `requirements.txt`, `visualize.py`                 | Viết Chương 5 (Bài 6 Segmentation) & Chương 6 (Tổng kết, phân công), biên tập Báo cáo & đóng gói nộp bài |  25%  |
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────────────────────┐
 │                     PHÂN BỔ KHỐI LƯỢNG CHUYỂN ĐỔI KERAS → PYTORCH                        │
 ├────────────────────┬────────────────────┬────────────────────┬───────────────────────────┤
-│   TV1: Bảo (25%)   │  TV2: Long (25%)   │  TV3: Sang (25%)   │  TV4: Cường - NT (25%)    │
-│ Core + Bài 0, 1, 2 │ Bài 3 & Bài 4 CNN  │ Bài 5 LSTM + Tests │ Bài 6 SegNet + Lead/Pack  │
+│ TV1: Cường (25%)   │ TV2: Bảo (25%)     │ TV3: Long (25%)    │ TV4: Sang (25%)           │
+│ Core + Bài 0, 1, 2 │ Bài 3 & Bài 4 CNN  │ Bài 5 LSTM + Tests │ Bài 6 SegNet + Đóng gói  │
 └────────────────────┴────────────────────┴────────────────────┴───────────────────────────┘
 ```
 
 ### Chi tiết đầu việc từng thành viên
 
-#### 1. TV1 – Châu Quốc Bảo (`3123411024`) – 25%
+#### 1. TV1 – Nguyễn Đình Cường (`3123411043`, nhóm trưởng) – 25%
 - **Code bàn giao sớm (Giai đoạn 1):**
   - `src/pytorch_core.py`: `seed_everything(seed=42)`, `get_device()`, `EarlyStopping` (tự động lưu/khôi phục `best_model_state`), `train_one_epoch`, `evaluate`, `fit` (hỗ trợ cả bài toán **Classification**, **Regression**, **Segmentation**, tự lưu lịch sử loss/metric ra CSV).
 - **Chuyển đổi code & Notebook:**
@@ -87,7 +87,7 @@ Toàn bộ 4 thành viên thống nhất áp dụng đúng bảng quy đổi k�
   - `src/models/mnist_cnn.py` & `notebooks/02_mnist_cnn.ipynb`: Chuyển **Bài 2 (CNN #1 MNIST)** – đối chiếu mốc **`98.89%`** và so sánh trực tiếp với MLP (đường cong học tập + thời gian chạy + số tham số).
 - **Báo cáo:** Viết **Chương 1** (Cơ sở lý thuyết & Bảng ánh xạ cú pháp Keras ↔ PyTorch đầy đủ kèm code đối chiếu cạnh nhau) và **Chương 2** (Kết quả Bài 1 & Bài 2).
 
-#### 2. TV2 – Nguyễn Hoàng Long (`3123411179`) – 25%
+#### 2. TV2 – Châu Quốc Bảo (`3123411024`) – 25%
 - **Chuyển đổi code & Notebook:**
   - `src/models/gender_cnn.py` & `notebooks/03_gender_cnn.ipynb`: Chuyển **Bài 3 (CNN #2 – Human Gender Prediction, $64\times 64$ RGB, 2 lớp)**:
     - Chạy và lưu kết quả **2 cấu hình**:
@@ -100,7 +100,7 @@ Toàn bộ 4 thành viên thống nhất áp dụng đúng bảng quy đổi k�
       2. *Có Data Augmentation (`torchvision.transforms`: Flip, Rotation, Affine)* thay cho `ImageDataGenerator`: đối chiếu mức tăng accuracy (`~61.6%+`) và giảm khoảng cách train–val gap.
 - **Báo cáo:** Viết **Chương 3** (Trình bày chi tiết chuyển đổi Bài 3 & Bài 4, phân tích cách chuyển 3 kỹ thuật huấn luyện `EarlyStopping`, `ReduceLROnPlateau`, `ImageDataGenerator → torchvision.transforms`).
 
-#### 3. TV3 – Võ Huỳnh Minh Sang (`3123411256`) – 25%
+#### 3. TV3 – Nguyễn Hoàng Long (`3123411179`) – 25%
 - **Chuyển đổi code & Notebook:**
   - `src/models/mnist_lstm.py` & `notebooks/05_mnist_lstm_sum.ipynb`: Chuyển **Bài 5 (CNN + LSTM – MNIST Sequence Summation)**:
     - Cài đặt module **`TimeDistributed(nn.Module)`** tái sử dụng được trong PyTorch.
@@ -112,7 +112,7 @@ Toàn bộ 4 thành viên thống nhất áp dụng đúng bảng quy đổi k�
     - Tổng hợp file `logs/comparison_keras_vs_pytorch.csv` đối chiếu đầy đủ Loss / Accuracy / MAE giữa Slide Keras gốc và kết quả PyTorch chạy thực tế của nhóm.
 - **Báo cáo:** Viết **Chương 4** (Chuyển đổi Bài 5 CNN-LSTM, giải thích kỹ thuật `TimeDistributed` trong PyTorch & bài toán hồi quy MAE) và **Mục 6.1** (Phân tích các khác biệt cốt lõi giữa Keras và PyTorch ảnh hưởng đến kết quả thực nghiệm).
 
-#### 4. TV4 – Nguyễn Đình Cường (`3123411043` – Nhóm trưởng) – 25%
+#### 4. TV4 – Võ Huỳnh Minh Sang (`3123411256` ) – 25%
 - **Code bàn giao sớm (Giai đoạn 1):**
   - `src/visualize.py`: Bộ hàm vẽ đồ thị thống nhất style (300 DPI) cho cả nhóm: đường cong Train/Val Loss & Accuracy, biểu đồ so sánh Before/After kỹ thuật huấn luyện, lưới ảnh dự đoán và lưới Segmentation Mask.
 - **Chuyển đổi code & Notebook:**
@@ -210,7 +210,7 @@ KerasToPytorch/
 | **GĐ 1: Core & Khung chung** | Ngày 1 – 2 | - **TV1:** Hoàn thiện `src/pytorch_core.py`, `00_keras_vs_pytorch_basics.ipynb` và chạy xong Bài 1 (MLP MNIST).<br>- **TV4:** Hoàn thiện `src/visualize.py`, `requirements.txt` và chuẩn bị nguồn dữ liệu cho Bài 6.<br>- **TV2 & TV3:** Chuẩn bị bộ dữ liệu Bài 3, 4, 5 và dựng khung class model PyTorch tương ứng. | `pytorch_core.py` & `visualize.py` chạy thông suốt; 4 thành viên thống nhất API và chuẩn dữ liệu. |
 | **GĐ 2: Chuyển đổi & Huấn luyện 6 Bài** | Ngày 3 – 5 | - **TV1:** Hoàn thiện Bài 2 (`02_mnist_cnn.ipynb`), xuất logs & figures.<br>- **TV2:** Hoàn thiện Bài 3 (`03_gender_cnn.ipynb`, 2 bản) & Bài 4 (`04_emotion_cnn.ipynb`, 2 bản), xuất logs & figures.<br>- **TV3:** Hoàn thiện Bài 5 (`05_mnist_lstm_sum.ipynb` + `TimeDistributed`), viết `tests/test_models_contract.py`.<br>- **TV4:** Hoàn thiện Bài 6 (`06_hand_segmentation_segnet.ipynb`), xuất mask dự đoán & logs. | Toàn bộ 7 notebook (`00` → `06`) chạy hoàn chỉnh từ đầu đến cuối, đạt hoặc vượt mốc Keras gốc. |
 | **GĐ 3: Đối chiếu & Viết Báo cáo** | Ngày 6 – 7 | - **TV3:** Chạy `pytest/unittest` kiểm tra toàn bộ 6 model, tổng hợp `logs/comparison_keras_vs_pytorch.csv`.<br>- **TV1, TV2, TV3, TV4:** Hoàn thiện các chương báo cáo được phân công (Chương 1 → 6).<br>- **TV4:** Cập nhật `README.md` bản PyTorch 2.x, ghép hoàn chỉnh `reports/BaoCao_KerasToPyTorch.docx` & `.pdf`. | Báo cáo đầy đủ 6 chương, toàn bộ số liệu khớp 100% với `logs/*.csv` và output notebook. |
-| **GĐ 4: Rà soát & Đóng gói** | Ngày 8 | - **Cả nhóm:** Kiểm tra chéo (Peer Review) từng notebook đảm bảo không còn sót dòng `import keras/tensorflow`, ảnh biểu đồ rõ nét, output cell đã lưu sẵn.<br>- **TV4 (Nhóm trưởng):** Dọn dẹp cache rác, không nén tập dữ liệu thô quá nặng, kiểm tra đủ **Báo cáo + Code đã chuyển + File liên quan** và đóng gói file nộp bài. | Bộ sản phẩm hoàn chỉnh sẵn sàng nộp đúng hạn. |
+| **GĐ 4: Rà soát & Đóng gói** | Ngày 8 | - **Cả nhóm:** Kiểm tra chéo (Peer Review) từng notebook đảm bảo không còn sót dòng `import keras/tensorflow`, ảnh biểu đồ rõ nét, output cell đã lưu sẵn.<br>- **TV4:** Dọn dẹp cache rác, không nén tập dữ liệu thô quá nặng, kiểm tra đủ **Báo cáo + Code đã chuyển + File liên quan** và đóng gói file nộp bài. | Bộ sản phẩm hoàn chỉnh sẵn sàng nộp đúng hạn. |
 
 ---
 
