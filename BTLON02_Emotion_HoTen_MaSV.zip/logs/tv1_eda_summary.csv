@@ -1,0 +1,4 @@
+split,total_images,all_black_images,Angry,Disgust,Fear,Happy,Sad,Surprise,Neutral,pixel_mean_0_to_1,pixel_std_0_to_1
+Training,28709,11,3995,436,4097,7215,4830,3171,4965,0.50774251,0.25500892
+PublicTest,3589,1,467,56,496,895,653,415,607,,
+PrivateTest,3589,0,491,55,528,879,594,416,626,,

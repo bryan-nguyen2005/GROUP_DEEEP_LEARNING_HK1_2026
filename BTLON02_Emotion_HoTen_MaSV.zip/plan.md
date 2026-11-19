@@ -88,12 +88,12 @@
 
 ## III. DANH SÁCH THÀNH VIÊN & PHÂN CÔNG CHI TIẾT (25% × 4)
 
-| STT | Họ và tên | MSSV | Vai trò chính | Tỷ lệ |
-|:---:|:---|:---:|:---|:---:|
-| 1 | **Châu Quốc Bảo** | `3123411024` | **TV1:** Data Pipeline, EDA, Transforms & Kho kiến trúc CNN (`models.py`) | 25% |
-| 2 | **Nguyễn Hoàng Long** | `3123411179` | **TV2:** Core Training Pipeline, Metrics, Callbacks & Thực nghiệm Nhóm 1 (Kiến trúc + Fail Case) | 25% |
-| 3 | **Võ Huỳnh Minh Sang** | `3123411256` | **TV3:** Thực nghiệm Nhóm 2 (Ablation kỹ thuật huấn luyện) & Chủ trì Nhật ký thực nghiệm | 25% |
-| 4 | **Nguyễn Đình Cường** *(Nhóm trưởng)* | `3123411043` | **TV4:** Trực quan hóa Final Conv Filters/Grad-CAM, Đánh giá PrivateTest, Tổng hợp Báo cáo, Slide & Đóng gói nộp bài | 25% |
+| STT | Họ và tên                            |     MSSV     | Vai trò chính                                                                                                        | Tỷ lệ |
+| :-: | :----------------------------------- | :----------: | :------------------------------------------------------------------------------------------------------------------- | :---: |
+|  1  | **Nguyễn Đình Cường** *(nhóm trưởng) | `3123411043` | **TV1:** Data Pipeline, EDA, Transforms & Kho kiến trúc CNN (`models.py`)                                            |  25%  |
+|  2  | **Châu Quốc Bảo**                    | `3123411024` | **TV2:** Core Training Pipeline, Metrics, Callbacks & Thực nghiệm Nhóm 1 (Kiến trúc + Fail Case)                     |  25%  |
+|  3  | **Nguyễn Hoàng Long**                | `3123411179` | **TV3:** Thực nghiệm Nhóm 2 (Ablation kỹ thuật huấn luyện) & Chủ trì Nhật ký thực nghiệm                             |  25%  |
+|  4  | **Võ Huỳnh Minh Sang**               | `3123411256` | **TV4:** Trực quan hóa Final Conv Filters/Grad-CAM, Đánh giá PrivateTest, Tổng hợp Báo cáo, Slide & Đóng gói nộp bài |  25%  |
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────────────────────┐
@@ -104,7 +104,7 @@
 └────────────────────┴────────────────────┴────────────────────┴───────────────────────────┘
 ```
 
-### 1. THÀNH VIÊN 1 – Châu Quốc Bảo (`3123411024`) – 25%
+### 1. THÀNH VIÊN 1 – Nguyễn Đình Cường (`3123411043- Nhóm Trưởng`) – 25%
 - **Mã nguồn phụ trách:**
   - `src/dataset.py`:
     - Hỗ trợ đọc trực tiếp `fer2013.csv` (tự động cache sang `.npz` để nạp nhanh) hoặc cấu trúc thư mục ảnh `Training/PublicTest/PrivateTest`.
@@ -127,7 +127,7 @@
 
 ---
 
-### 2. THÀNH VIÊN 2 – Nguyễn Hoàng Long (`3123411179`) – 25%
+### 2. THÀNH VIÊN 2 – Châu Quốc Bảo (`3123411024`) – 25%
 - **Mã nguồn phụ trách:**
   - `src/utils.py`: `seed_everything`, `get_device`, đếm số tham số trainable, định dạng thời gian chạy.
   - `src/metrics.py`: Tính `accuracy`, `macro_f1`, `weighted_f1`, bảng per-class Precision/Recall/F1, `confusion_matrix`.
@@ -146,7 +146,7 @@
 
 ---
 
-### 3. THÀNH VIÊN 3 – Võ Huỳnh Minh Sang (`3123411256`) – 25%
+### 3. THÀNH VIÊN 3 – Nguyễn Hoàng Long (`3123411179`) – 25%
 - **Mã nguồn phụ trách:**
   - `src/run_exp2_training_techniques.py`:
     - Nhận kiến trúc tốt nhất từ Nhóm 1 làm mốc, chạy trọn bộ **Thực nghiệm Nhóm 2 (`EXP-07` đến `EXP-17`)** theo nguyên tắc cô lập từng biến:
@@ -169,7 +169,7 @@
 
 ---
 
-### 4. THÀNH VIÊN 4 – Nguyễn Đình Cường (`3123411043` – Nhóm trưởng) – 25%
+### 4. THÀNH VIÊN 4 –  (`3123411256) – 25%
 - **Mã nguồn phụ trách:**
   - **Bàn giao sớm ngay Giai đoạn 1 – `src/visualize.py`:**
     - Bộ hàm vẽ chuẩn 300 DPI dùng chung cho cả nhóm: `plot_learning_curves`, `plot_experiment_comparison`, `plot_confusion_matrix`, `plot_prediction_grid`.

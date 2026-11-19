@@ -1,0 +1,7 @@
+model_name,trainable_parameters,uses_batch_norm
+SmallCNN,38902087,1
+MediumCNN,11328583,1
+Medium1CNN,12103623,1
+LargeCNN,20410439,1
+ImprovedFERNet,4863751,1
+VGG16Transfer,14718279,0
