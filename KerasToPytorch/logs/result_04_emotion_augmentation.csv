@@ -1,0 +1,2 @@
+task,variant,train_count,val_count,test_count,seed,epochs_run,batch_size,initial_lr,optimizer,parameters,test_loss,test_accuracy,keras_reference_loss,keras_reference_accuracy,seconds,device,torch_version
+emotion,augmentation,28709,3589,3589,42,30,128,0.001,Adam,2390791,1.0181766806554915,0.6274728336584007,1.0158,0.6163,109.589271068573,cuda,2.6.0+cu124

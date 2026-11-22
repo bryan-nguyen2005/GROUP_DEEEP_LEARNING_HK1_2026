@@ -1,0 +1,4 @@
+# Dữ liệu gốc không đưa lên Git.
+data/UTKFace/
+data/fer2013.csv
+__pycache__/

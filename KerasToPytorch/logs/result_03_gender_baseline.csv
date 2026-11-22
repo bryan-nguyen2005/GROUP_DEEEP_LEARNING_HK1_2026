@@ -1,0 +1,2 @@
+task,variant,train_count,val_count,test_count,seed,epochs_run,batch_size,initial_lr,optimizer,parameters,test_loss,test_accuracy,keras_reference_loss,keras_reference_accuracy,seconds,device,torch_version
+gender,baseline,18963,2370,2372,42,30,128,0.001,Adam,5270562,0.6629790439573549,0.8849072512647554,0.4602,0.8264,303.1868336200714,cuda,2.6.0+cu124

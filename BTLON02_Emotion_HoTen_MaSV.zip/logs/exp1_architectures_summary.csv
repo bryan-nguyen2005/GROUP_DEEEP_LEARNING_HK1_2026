@@ -1,0 +1,7 @@
+exp_id,model_name,num_params,use_bn,lr,best_epoch,total_epochs,train_loss,train_acc,val_loss,val_acc,val_macro_f1,train_time_sec,checkpoint_path,history_path,notes
+EXP-01,SmallCNN,38902087,1,0.001,54,60,0.826172,0.689679,0.920435,0.667595,0.631832,1331.56,checkpoints/EXP-01_SmallCNN.pth,logs/history_EXP-01.csv,Demo port: 2 conv blocks (64 -> 128/256) + FC 1024 + BN
+EXP-02,MediumCNN,11328583,1,0.001,47,59,0.763612,0.714793,0.910245,0.674840,0.645401,881.96,checkpoints/EXP-02_MediumCNN.pth,logs/history_EXP-02.csv,"Demo port: 3 conv blocks (2x64, 3x128, 3x256) + FC 1024 + BN"
+EXP-03,Medium1CNN,12103623,1,0.001,49,60,0.747752,0.722178,0.905710,0.676512,0.644205,986.66,checkpoints/EXP-03_Medium1CNN.pth,logs/history_EXP-03.csv,"Demo port: deeper 3 conv blocks (3x64, 4x128, 4x256) + FC 1024 + BN"
+EXP-04,LargeCNN,20410439,1,0.001,51,60,0.730763,0.731826,0.919285,0.670660,0.642087,1404.95,checkpoints/EXP-04_LargeCNN.pth,logs/history_EXP-04.csv,Demo port: 4 conv blocks (4x64..4x512) + FC 2048 + BN
+EXP-05,ImprovedFERNet,4863751,1,0.001,42,54,0.712472,0.732070,0.886675,0.686542,0.663855,599.18,checkpoints/EXP-05_ImprovedFERNet.pth,logs/history_EXP-05.csv,Group proposal: 4 Residual blocks + BN + Dropout2d + GlobalAvgPool
+EXP-06,VGG16Transfer,14718279,0,0.0001,10,22,0.782861,0.705946,0.930480,0.666481,0.635343,313.12,checkpoints/EXP-06_VGG16Transfer.pth,logs/history_EXP-06.csv,"Fail Case: fine-tune ImageNet VGG16 (5 MaxPool -> 1x1 on 48x48, lr=1e-4)"
