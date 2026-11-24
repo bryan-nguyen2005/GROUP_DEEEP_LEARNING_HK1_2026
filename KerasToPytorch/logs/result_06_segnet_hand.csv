@@ -1,0 +1,2 @@
+model_name,parameters,train_samples,val_samples,test_samples,epochs_run,train_time_sec,test_loss,test_pixel_accuracy,test_miou,device,dataset_source
+SegNet,739719,735,157,158,18,436.76,0.035293,0.991005,0.935659,cpu,"Synthetic Kinect-style Hand Depth Benchmark (1050 samples, 96x96, 7 classes)"

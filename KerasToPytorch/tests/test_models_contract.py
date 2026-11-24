@@ -14,6 +14,7 @@ from src.models import (
     EmotionCNN,
     MNISTSequenceLSTM,
     TimeDistributed,
+    SegNet,
 )
 
 
@@ -80,6 +81,18 @@ class ModelsContractTests(unittest.TestCase):
         self.assertIsNotNone(model.fc.weight.grad)
         params = sum(p.numel() for p in model.parameters() if p.requires_grad)
         self.assertEqual(params, 552_577)
+
+    def test_segnet_contract(self):
+        model = SegNet(in_channels=1, num_classes=7, base_channels=32, use_bn=True)
+        x = torch.randn(2, 1, 96, 96)
+        logits = model(x)
+        self.assertEqual(logits.shape, (2, 7, 96, 96))
+        target = torch.randint(0, 7, (2, 96, 96), dtype=torch.long)
+        loss = nn.CrossEntropyLoss()(logits, target)
+        loss.backward()
+        self.assertIsNotNone(model.classifier.weight.grad)
+        params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+        self.assertGreater(params, 100_000)
 
 
 if __name__ == "__main__":

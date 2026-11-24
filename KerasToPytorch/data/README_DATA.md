@@ -26,3 +26,11 @@ Slide chỉ thể hiện lớp đầu và các khối tiếp theo bằng dấu `
 ## Dữ liệu đã sử dụng trong lần chạy TV2
 
 UTKFace bản aligned/cropped được tải từ [bản sao py97](https://huggingface.co/datasets/py97/UTKFace-Cropped), dựa trên [nguồn UTKFace](https://github.com/aicip/UTKFace). SHA-256 của `UTKFace.tar.gz`: `2c0655397b498e81b82d685ee74bee8c2e4364a5897caf3afec6ea48929024a7`. 23.705 ảnh có tên hợp lệ: 18.963 train, 2.370 validation, 2.372 test. Dữ liệu gốc dành cho nghiên cứu phi thương mại; tham khảo điều kiện tại nguồn gốc. FER CSV: SHA-256 `3b8d9617d1017f34733c8f2474d7784c563ce86c40a86ac12c2d37cc968f871b`. Dữ liệu gốc được loại khỏi Git. Checkpoint được quản lý bằng Git LFS; sau khi clone hoặc pull, chạy `git lfs install` và `git lfs pull` để tải trọng số.
+
+
+## Hand Depth Segmentation 96×96 (Bài 6 — TV4)
+
+Kho mã nguồn gốc năm 2018 của tác giả (`nhduong/multitask_segnet_hand_segmentation_fingertip_detection`) không công bố liên kết tải trực tiếp bộ dữ liệu Kinect Hand Depth (`Source Code and Usage: coming soon`). Do đó, mô-đun `src/segnet_experiment.py` và notebook `notebooks/06_hand_segmentation_segnet.ipynb` hỗ trợ đồng thời hai chế độ minh bạch:
+
+1. **Chế độ dữ liệu ngoài (`--data-dir`):** Nạp trực tiếp thư mục chứa `images/` (ảnh độ sâu/xám) và `masks/` (mặt nạ chỉ số lớp) từ bất kỳ bộ dữ liệu phân đoạn bàn tay công khai nào (ví dụ EgoHands / NYU Hand Depth / Kaggle Hand Segmentation), tự động resize về `96 × 96`.
+2. **Chế độ chuẩn tái lập mặc định (1.050 mẫu, `seed=42`):** Tự động sinh bộ dữ liệu chuẩn mô phỏng ảnh độ sâu bàn tay Kinect kích thước `96 × 96` gồm đúng **1.050 mẫu** (trùng số lượng mẫu trên Slide 56) với **7 lớp giải phẫu** (`0=Background`, `1=Palm`, `2=Thumb`, `3=Index`, `4=Middle`, `5=Ring`, `6=Pinky`), chia cố định 70% Train (735) / 15% Validation (157) / 15% Test (158) nhằm đảm bảo khả năng chạy tái lập hoàn chỉnh không cần tải tay.

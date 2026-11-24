@@ -3,7 +3,7 @@
 
 > **Môn học:** Học sâu (Deep Learning) · **Lớp:** DCT123C4 · **GVHD:** ThS. Đỗ Như Tài  
 > **Chủ trì quản trị nhật ký:** Thành viên 3 – Nguyễn Hoàng Long (`3123411179`)  
-> **Cập nhật ngày:** 24/11/2026 · **Tình trạng:** Hoàn tất Nhóm 1 (EXP-01..06) và Nhóm 2 (EXP-07..17)
+> **Cập nhật ngày:** 24/11/2026 · **Tình trạng:** Hoàn tất toàn bộ 18 thực nghiệm (`EXP-01..EXP-18`) & Đánh giá ngoại kiểm `PrivateTest`
 
 ---
 
@@ -40,6 +40,7 @@
 | `EXP-15` | Nhóm 2D (Regularize) | `No-BN` *(Mất ổn định)* | 4.86M | 28 / 40 | 0.8532 | 62.86% | 1.1043 | 59.44% | 54.76% | 6m 48s | TV3 - Nguyễn Hoàng Long |
 | **`EXP-16`** | **Nhóm 2D (Imbalance)** | **`Weighted CrossEntropy`** | **4.86M** | **44 / 54** | **0.6866** | **73.64%** | **0.9119** | **68.88%** | **68.03%** | **10m 10s** | **TV3 - Nguyễn Hoàng Long** |
 | **`EXP-17`** | **Nhóm 2D (Regularize)** | **`Label Smoothing (0.1)`** | **4.86M** | **48 / 54** | **0.6634** | **73.45%** | **0.9455** | **69.88%** | **67.85%** | **10m 10s** | **TV3 - Nguyễn Hoàng Long** |
+| **`EXP-18`** | **Chốt Best Model** | **`ImprovedFERNet` (Fallback đã kiểm chứng + Đánh giá `PrivateTest`)** | **4.86M** | **42 / 54** | **0.7125** | **73.21%** | **0.8867 (Pub) / 0.8364 (Priv)** | **68.63% (Pub) / 70.41% (Priv)** | **66.36% (Pub) / 68.47% (Priv)** | **9m 59s** | **TV4 - Võ Huỳnh Minh Sang** |
 
 ---
 

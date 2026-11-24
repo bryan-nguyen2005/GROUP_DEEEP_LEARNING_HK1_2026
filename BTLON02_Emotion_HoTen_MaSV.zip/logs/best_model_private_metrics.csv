@@ -1,0 +1,4 @@
+split,model_name,source_checkpoint,use_tta,num_params,loss,accuracy,macro_f1,weighted_f1,macro_precision,macro_recall,device
+PublicTest_Standard,ImprovedFERNet,checkpoints/EXP-05_ImprovedFERNet.pth,0,4863751,0.886684,0.686264,0.663561,0.684883,0.680984,0.652072,cpu
+PublicTest_TTA3,ImprovedFERNet,checkpoints/EXP-05_ImprovedFERNet.pth,1,4863751,0.867249,0.685149,0.664091,0.683617,0.680808,0.652508,cpu
+PrivateTest_Final,ImprovedFERNet,checkpoints/EXP-05_ImprovedFERNet.pth,0,4863751,0.836405,0.704096,0.684694,0.702863,0.703576,0.671818,cpu

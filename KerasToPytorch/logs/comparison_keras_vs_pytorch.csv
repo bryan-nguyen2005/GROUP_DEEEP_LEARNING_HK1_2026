@@ -6,3 +6,5 @@ Bai_3,CNN Gender,Callbacks,Conv(16-32-64) + EarlyStopping + ReduceLR,5270562,0.3
 Bai_4,CNN Emotion,Baseline (No-Aug),Conv(16-32-64) + FC(1024) + FC(7),2390791,1.4070,Accuracy,59.54%,2.9949,Accuracy,56.92%,-2.62% pp,TUONG_DUONG,Xac nhan hien tuong overfitting nang ne khi khong co data augmentation
 Bai_4,CNN Emotion,Augmentation,Conv(16-32-64) + torchvision.transforms,2390791,1.0158,Accuracy,61.63%,1.0182,Accuracy,62.75%,+1.12% pp,VUOT_MOC,Flip + Rotate 10 + Affine thay the ImageDataGenerator thu hep train-val gap
 Bai_5,CNN-LSTM Sum,Callbacks,TimeDistributed(CNN) + LSTM(128) + Dense(1),552577,N/A,Test MAE,0.6502,0.6385,Test MAE,0.6385,-0.0117 MAE,VUOT_MOC,Danh gia tren 10.000 chuoi test doc lap vuot moc Keras MAE 0.6502
+
+Bai_6,SegNet Hand Depth,Symmetric BN + Upsample,Encoder(32-64-128) + Decoder(Upsample nearest) + Conv1x1(7),739719,0.6860,Pixel Acc,77.32%,0.0353,Pixel Acc / mIoU,99.10% (mIoU 93.57%),+21.78% pp,VUOT_MOC,Chuyen doi thanh cong UpSampling2D sang nn.Upsample(mode=nearest) tren bo chuan 1050 anh 96x96 7 lop giai phau
