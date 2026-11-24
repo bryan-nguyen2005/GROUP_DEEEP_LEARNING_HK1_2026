@@ -1,4 +1,6 @@
 # Dữ liệu gốc không đưa lên Git.
 data/UTKFace/
 data/fer2013.csv
+data/MNIST/
 __pycache__/
+

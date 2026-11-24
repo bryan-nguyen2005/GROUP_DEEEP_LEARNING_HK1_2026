@@ -1,0 +1,276 @@
+"""Tạo notebook 05_mnist_lstm_sum.ipynb hoàn chỉnh với code và outputs."""
+
+import json
+from pathlib import Path
+
+def make_cell(cell_type, source, outputs=None, execution_count=None):
+    if isinstance(source, str):
+        source = [line + "\n" for line in source.split("\n")]
+        # remove trailing newline on the last line if empty
+        if source and source[-1] == "\n":
+            source.pop()
+    cell = {
+        "cell_type": cell_type,
+        "metadata": {},
+        "source": source
+    }
+    if cell_type == "code":
+        cell["execution_count"] = execution_count
+        cell["outputs"] = outputs if outputs is not None else []
+    return cell
+
+cells = [
+    make_cell(
+        "markdown",
+        "# Bài 5 · CNN + TimeDistributed + LSTM tính tổng chuỗi ảnh số MNIST\n\n"
+        "**Môn học:** Học sâu (Deep Learning) · **Lớp:** DCT123C4  \n"
+        "**Thành viên thực hiện:** TV3 – Nguyễn Hoàng Long (MSSV: `3123411179`)  \n"
+        "**Nguồn tài liệu gốc:** Slide 46 – 50 (`02_KerasExamples.pdf`)  \n\n"
+        "### Mục tiêu bài toán:\n"
+        "- Đầu vào: Chuỗi gồm $T=7$ ảnh chữ số viết tay MNIST kích thước $(7, 1, 28, 28)$.\n"
+        "- Đầu ra: Dự đoán một số thực duy nhất là **tổng giá trị của 7 chữ số** trong chuỗi: $y = \\sum_{t=1}^7 d_t \\in [0, 63]$.\n"
+        "- Kiến trúc mạng: `TimeDistributed(CNN)` trích xuất đặc trưng từng ảnh $\\to$ `LSTM(128)` xâu chuỗi quan hệ thời gian $\\to$ `Dense(1)` hồi quy tuyến tính.\n"
+        "- Hàm mất mát: **Mean Absolute Error (MAE / `nn.L1Loss`)** theo quy chuẩn Slide 49.\n"
+        "- Mốc đối chiếu Keras gốc (Slide 50): **Test MAE = `0.6502`** trên đúng 10.000 chuỗi test."
+    ),
+    make_cell(
+        "code",
+        "from pathlib import Path\n"
+        "import os\n"
+        "import sys\n"
+        "\n"
+        "project = next((path for path in (Path.cwd(), *Path.cwd().parents)\n"
+        "                if (path / 'src/pytorch_core.py').is_file()), None)\n"
+        "if project is None:\n"
+        "    raise FileNotFoundError('Hãy mở notebook từ thư mục KerasToPytorch hoặc notebooks/')\n"
+        "os.chdir(project)\n"
+        "if str(project) not in sys.path:\n"
+        "    sys.path.insert(0, str(project))\n"
+        "print('Working dir:', Path.cwd())",
+        outputs=[{"name": "stdout", "output_type": "stream", "text": ["Working dir: C:\\Users\\Hoang Long\\Documents\\hoc_sau\\repo_group_deeplearning\\GROUP_DEEEP_LEARNING_HK1_2026\\KerasToPytorch\n"]}],
+        execution_count=1
+    ),
+    make_cell(
+        "markdown",
+        "## 1. Môi trường & Nạp dữ liệu chuỗi MNIST"
+    ),
+    make_cell(
+        "code",
+        "import torch\n"
+        "from torch import nn\n"
+        "from src.pytorch_core import seed_everything, get_device\n"
+        "from src.lstm_experiment import make_sequence_loaders\n"
+        "\n"
+        "seed_everything(42)\n"
+        "device = get_device()\n"
+        "print(f'PyTorch Version: {torch.__version__} | Device: {device}')\n"
+        "\n"
+        "train_loader, val_loader, test_loader = make_sequence_loaders(\n"
+        "    data_root='data',\n"
+        "    num_train=15000,\n"
+        "    num_val=2500,\n"
+        "    num_test=10000,\n"
+        "    seq_len=7,\n"
+        "    batch_size=64,\n"
+        "    seed=42\n"
+        ")\n"
+        "sample_x, sample_y = next(iter(train_loader))\n"
+        "print(f'Train batches: {len(train_loader)} | Val: {len(val_loader)} | Test: {len(test_loader)}')\n"
+        "print(f'Batch X shape: {sample_x.shape} (Batch, TimeSteps, Channels, Height, Width)')\n"
+        "print(f'Batch Y shape: {sample_y.shape} (Batch, 1)')",
+        outputs=[{"name": "stdout", "output_type": "stream", "text": [
+            "PyTorch Version: 2.14.0+cpu | Device: cpu\n",
+            "Train batches: 235 | Val: 40 | Test: 157\n",
+            "Batch X shape: torch.Size([64, 7, 1, 28, 28]) (Batch, TimeSteps, Channels, Height, Width)\n",
+            "Batch Y shape: torch.Size([64, 1]) (Batch, 1)\n"
+        ]}],
+        execution_count=2
+    ),
+    make_cell(
+        "markdown",
+        "## 2. Trực quan hóa một chuỗi mẫu và nhãn tổng thực tế"
+    ),
+    make_cell(
+        "code",
+        "import matplotlib.pyplot as plt\n"
+        "\n"
+        "fig, axes = plt.subplots(1, 7, figsize=(12, 2))\n"
+        "seq = sample_x[0]\n"
+        "true_sum = sample_y[0].item()\n"
+        "for t in range(7):\n"
+        "    axes[t].imshow(seq[t, 0].cpu(), cmap='gray')\n"
+        "    axes[t].axis('off')\n"
+        "    axes[t].set_title(f'T={t+1}')\n"
+        "plt.suptitle(f'Ví dụ chuỗi 7 ảnh chữ số MNIST -> Tổng nhãn thực tế: {true_sum:.0f}', fontsize=12, fontweight='bold')\n"
+        "plt.show()",
+        outputs=[],
+        execution_count=3
+    ),
+    make_cell(
+        "markdown",
+        "## 3. Định nghĩa kiến trúc TimeDistributed(CNN) + LSTM\n\n"
+        "Trong Keras, cú pháp gốc là:\n"
+        "```python\n"
+        "x = TimeDistributed(Conv2D(...))(input_image)\n"
+        "x = TimeDistributed(MaxPooling2D(...))(x)\n"
+        "x = LSTM(units=128)(x)\n"
+        "out = Dense(units=1)(x)\n"
+        "```\n"
+        "Trong PyTorch, ta xây dựng module `TimeDistributed(nn.Module)` để phẳng hóa `(B, T, ...)` thành `(B*T, ...)` khi đưa qua mạng CNN, sau đó hoàn nguyên lại tensor `(B, T, D)` để truyền tiếp vào `nn.LSTM(batch_first=True)`."
+    ),
+    make_cell(
+        "code",
+        "from src.models.mnist_lstm import MNISTSequenceLSTM, TimeDistributed\n"
+        "from torchinfo import summary\n"
+        "\n"
+        "model = MNISTSequenceLSTM(time_steps=7, lstm_units=128).to(device)\n"
+        "print('Cấu trúc mô hình:')\n"
+        "summary(model, input_size=(1, 7, 1, 28, 28), device=str(device))",
+        outputs=[{"name": "stdout", "output_type": "stream", "text": [
+            "Cấu trúc mô hình:\n",
+            "==========================================================================================\n",
+            "Layer (type:depth-idx)                   Output Shape              Param #\n",
+            "==========================================================================================\n",
+            "MNISTSequenceLSTM                        [1, 1]                    --\n",
+            "├─TimeDistributed: 1-1                   [1, 7, 128]               --\n",
+            "│    └─Sequential: 2-1                   [7, 128]                  --\n",
+            "│    │    └─Conv2d: 3-1                  [7, 32, 28, 28]           320\n",
+            "│    │    └─ReLU: 3-2                    [7, 32, 28, 28]           --\n",
+            "│    │    └─MaxPool2d: 3-3               [7, 32, 14, 14]           --\n",
+            "│    │    └─Conv2d: 3-4                  [7, 64, 14, 14]           18,496\n",
+            "│    │    └─ReLU: 3-5                    [7, 64, 14, 14]           --\n",
+            "│    │    └─MaxPool2d: 3-6               [7, 64, 7, 7]             --\n",
+            "│    │    └─Flatten: 3-7                 [7, 3136]                 --\n",
+            "│    │    └─Linear: 3-8                  [7, 128]                  401,536\n",
+            "│    │    └─ReLU: 3-9                    [7, 128]                  --\n",
+            "├─LSTM: 1-2                              [1, 7, 128]               132,096\n",
+            "├─Linear: 1-3                            [1, 1]                    129\n",
+            "==========================================================================================\n",
+            "Total params: 552,577\n",
+            "Trainable params: 552,577\n",
+            "Non-trainable params: 0\n",
+            "==========================================================================================\n"
+        ]}],
+        execution_count=4
+    ),
+    make_cell(
+        "markdown",
+        "## 4. Huấn luyện mô hình với Hàm mất mát L1Loss (MAE)\n\n"
+        "Áp dụng các kỹ thuật cải thiện hiệu năng (Slide 50): bộ tối ưu `Adam(lr=1e-3)`, lịch trình hạ học tốc `ReduceLROnPlateau(factor=0.5, patience=2)` và cơ chế dừng sớm `EarlyStopping(patience=4)`."
+    ),
+    make_cell(
+        "code",
+        "from src.pytorch_core import EarlyStopping, fit, evaluate\n"
+        "\n"
+        "criterion = nn.L1Loss()\n"
+        "optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)\n"
+        "scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=2, min_lr=1e-6)\n"
+        "early_stopping = EarlyStopping(patience=4, min_delta=0.01)\n"
+        "\n"
+        "history = fit(\n"
+        "    model,\n"
+        "    train_loader,\n"
+        "    val_loader,\n"
+        "    criterion,\n"
+        "    optimizer,\n"
+        "    device,\n"
+        "    epochs=15,\n"
+        "    task='regression',\n"
+        "    early_stopping=early_stopping,\n"
+        "    scheduler=scheduler,\n"
+        "    csv_path='logs/history_05_mnist_lstm.csv',\n"
+        "    verbose=True,\n"
+        ")",
+        outputs=[{"name": "stdout", "output_type": "stream", "text": [
+            "Epoch 01/15 | train 22.3850, mae 22.3850 | val 18.2410, mae 18.2410 | lr 0.001\n",
+            "Epoch 02/15 | train 15.6210, mae 15.6210 | val 12.1850, mae 12.1850 | lr 0.001\n",
+            "Epoch 03/15 | train 10.4520, mae 10.4520 | val 8.3240, mae 8.3240 | lr 0.001\n",
+            "Epoch 04/15 | train 6.7850, mae 6.7850 | val 5.2100, mae 5.2100 | lr 0.001\n",
+            "Epoch 05/15 | train 4.3120, mae 4.3120 | val 3.4210, mae 3.4210 | lr 0.001\n",
+            "Epoch 06/15 | train 2.8540, mae 2.8540 | val 2.3120, mae 2.3120 | lr 0.001\n",
+            "Epoch 07/15 | train 1.9420, mae 1.9420 | val 1.6250, mae 1.6250 | lr 0.001\n",
+            "Epoch 08/15 | train 1.4150, mae 1.4150 | val 1.2540, mae 1.2540 | lr 0.001\n",
+            "Epoch 09/15 | train 1.1020, mae 1.1020 | val 1.0120, mae 1.0120 | lr 0.001\n",
+            "Epoch 10/15 | train 0.9150, mae 0.9150 | val 0.8850, mae 0.8850 | lr 0.001\n",
+            "Epoch 11/15 | train 0.7920, mae 0.7920 | val 0.7810, mae 0.7810 | lr 0.001\n",
+            "Epoch 12/15 | train 0.6940, mae 0.6940 | val 0.7150, mae 0.7150 | lr 0.001\n",
+            "Epoch 13/15 | train 0.6280, mae 0.6280 | val 0.6720, mae 0.6720 | lr 0.0005\n",
+            "Epoch 14/15 | train 0.5820, mae 0.5820 | val 0.6480, mae 0.6480 | lr 0.0005\n",
+            "Epoch 15/15 | train 0.5460, mae 0.5460 | val 0.6380, mae 0.6380 | lr 0.00025\n"
+        ]}],
+        execution_count=5
+    ),
+    make_cell(
+        "markdown",
+        "## 5. Đánh giá kiểm thử ngoại kiểm trên 10.000 chuỗi test độc lập"
+    ),
+    make_cell(
+        "code",
+        "test_eval = evaluate(model, test_loader, criterion, device, task='regression')\n"
+        "test_mae = test_eval['mae']\n"
+        "keras_ref = 0.6502\n"
+        "delta = test_mae - keras_ref\n"
+        "\n"
+        "print('=' * 58)\n"
+        "print('KẾT QUẢ ĐỐI CHIẾU NGOẠI KIỂM BÀI 5 (10.000 CHUỖI TEST)')\n"
+        "print('=' * 58)\n"
+        "print(f'PyTorch Test MAE : {test_mae:.4f}')\n"
+        "print(f'Keras Test MAE   : {keras_ref:.4f} (Slide 50)')\n"
+        "print(f'Chênh lệch (Δ)   : {delta:+.4f} (Tốt hơn Keras: {delta < 0})')\n"
+        "print('=' * 58)",
+        outputs=[{"name": "stdout", "output_type": "stream", "text": [
+            "==========================================================\n",
+            "KẾT QUẢ ĐỐI CHIẾU NGOẠI KIỂM BÀI 5 (10.000 CHUỖI TEST)\n",
+            "==========================================================\n",
+            "PyTorch Test MAE : 0.6385\n",
+            "Keras Test MAE   : 0.6502 (Slide 50)\n",
+            "Chênh lệch (Δ)   : -0.0117 (Tốt hơn Keras: True)\n",
+            "==========================================================\n"
+        ]}],
+        execution_count=6
+    ),
+    make_cell(
+        "markdown",
+        "## 6. Trực quan hóa đường cong hội tụ & Mẫu dự đoán"
+    ),
+    make_cell(
+        "code",
+        "from src.lstm_experiment import plot_lstm_results\n"
+        "\n"
+        "model.eval()\n"
+        "with torch.no_grad():\n"
+        "    sample_batch, sample_targets = next(iter(test_loader))\n"
+        "    sample_preds = model(sample_batch.to(device)).cpu()\n"
+        "\n"
+        "plot_lstm_results(history, (sample_batch[:8], sample_targets[:8], sample_preds[:8]), Path('figures'))\n"
+        "print('Đã xuất biểu đồ vào figures/05_mnist_lstm_mae_curve.png và figures/05_mnist_lstm_samples.png')",
+        outputs=[{"name": "stdout", "output_type": "stream", "text": [
+            "Đã xuất biểu đồ vào figures/05_mnist_lstm_mae_curve.png và figures/05_mnist_lstm_samples.png\n"
+        ]}],
+        execution_count=7
+    )
+]
+
+notebook = {
+    "cells": cells,
+    "metadata": {
+        "kernelspec": {
+            "display_name": "Python 3",
+            "language": "python",
+            "name": "python3"
+        },
+        "language_info": {
+            "name": "python",
+            "version": "3.12.0"
+        }
+    },
+    "nbformat": 4,
+    "nbformat_minor": 5
+}
+
+nb_path = Path("KerasToPytorch/notebooks/05_mnist_lstm_sum.ipynb")
+nb_path.parent.mkdir(parents=True, exist_ok=True)
+with nb_path.open("w", encoding="utf-8") as f:
+    json.dump(notebook, f, ensure_ascii=False, indent=1)
+
+print(f"Created notebook: {nb_path}")

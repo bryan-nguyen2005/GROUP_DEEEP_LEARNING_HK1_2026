@@ -1,0 +1,8 @@
+lesson_id,lesson_name,variant,architecture,parameters,keras_loss,keras_metric_name,keras_metric_value,pytorch_loss,pytorch_metric_name,pytorch_metric_value,delta_metric,status,notes
+Bai_1,MLP MNIST,Standardized,Flatten + FC(512)x2 + FC(10),669706,0.1128,Accuracy,96.57%,0.0966,Accuracy,97.06%,+0.49% pp,VUOT_MOC,PyTorch chuan hoa dung mean/std va Xavier init giup hoi tu sau hon
+Bai_2,CNN MNIST,Adam Opt,Conv(64-128-256) + FC(512)x2 + FC(10),1817610,0.0319,Accuracy,98.89%,0.0210,Accuracy,99.35%,+0.46% pp,VUOT_MOC,Adam lr=1e-3 hoi tu nhanh va dat do chinh xac vuot troi hon SGD
+Bai_3,CNN Gender,Baseline,Conv(16-32-64) + FC(1024)x2 + FC(2),5270562,0.4602,Accuracy,82.64%,0.6630,Accuracy,88.49%,+5.85% pp,VUOT_MOC,Tap du lieu UTKFace 64x64 duoc chia sach 80/10/10
+Bai_3,CNN Gender,Callbacks,Conv(16-32-64) + EarlyStopping + ReduceLR,5270562,0.3237,Accuracy,87.73%,0.2488,Accuracy,89.33%,+1.60% pp,VUOT_MOC,Dung tai epoch 13 nho EarlyStopping tranh overfit va giam loss dang ke
+Bai_4,CNN Emotion,Baseline (No-Aug),Conv(16-32-64) + FC(1024) + FC(7),2390791,1.4070,Accuracy,59.54%,2.9949,Accuracy,56.92%,-2.62% pp,TUONG_DUONG,Xac nhan hien tuong overfitting nang ne khi khong co data augmentation
+Bai_4,CNN Emotion,Augmentation,Conv(16-32-64) + torchvision.transforms,2390791,1.0158,Accuracy,61.63%,1.0182,Accuracy,62.75%,+1.12% pp,VUOT_MOC,Flip + Rotate 10 + Affine thay the ImageDataGenerator thu hep train-val gap
+Bai_5,CNN-LSTM Sum,Callbacks,TimeDistributed(CNN) + LSTM(128) + Dense(1),552577,N/A,Test MAE,0.6502,0.6385,Test MAE,0.6385,-0.0117 MAE,VUOT_MOC,Danh gia tren 10.000 chuoi test doc lap vuot moc Keras MAE 0.6502

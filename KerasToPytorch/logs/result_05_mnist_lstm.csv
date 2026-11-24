@@ -1,0 +1,2 @@
+task,epochs,parameters,test_loss,test_mae,keras_reference_mae,mae_delta,fit_seconds,device,torch_version
+mnist_lstm_sum,15,552577,0.6385,0.6385,0.6502,-0.0117,112.45,cpu,2.14.0+cpu
